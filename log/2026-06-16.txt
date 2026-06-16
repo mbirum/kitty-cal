@@ -1,4 +1,4 @@
-wet_cal=90.0
+wet_cal=90
 wet_quantity=150
 dry_cal=120
 dry_quantity=1

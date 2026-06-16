@@ -67,7 +67,7 @@ def save_calories_today():
     print("Saving calories for today...")
     with open(log_file_path, "w") as f:
         for item, value in calories_today.items():
-            f.write(f"{item}={value}\n")
+            f.write(f"{item}={int(value)}\n")
     subprocess.run(["./gitpush.sh"], check=True)
 
 def add_to_cart(item, quantity):
@@ -83,15 +83,15 @@ def checkout_cart():
         if item in calories_today:
             calories_today[item] += quantity
             if item == "wet_quantity":
-                calories_today["wet_cal"] += quantity * wet_cal_per_gram
+                calories_today["wet_cal"] += int(quantity * wet_cal_per_gram)
             elif item == "dry_quantity":
-                calories_today["dry_cal"] += quantity * dry_cal_per_cup
+                calories_today["dry_cal"] += int(quantity * dry_cal_per_cup)
             elif item == "minnow_quantity":
-                calories_today["minnow_cal"] += quantity * minnow_cal_per_unit
+                calories_today["minnow_cal"] += int(quantity * minnow_cal_per_unit)
             elif item == "egg_quantity":
-                calories_today["egg_cal"] += quantity * egg_cal_per_unit
+                calories_today["egg_cal"] += int(quantity * egg_cal_per_unit)
             elif item == "giblet_quantity":
-                calories_today["giblet_cal"] += quantity * giblet_cal_per_unit
+                calories_today["giblet_cal"] += int(quantity * giblet_cal_per_unit)
     save_calories_today()
 
 def get_total_calories():
