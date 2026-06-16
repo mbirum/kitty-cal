@@ -30,3 +30,7 @@ class HomeFrame(Frame):
         self.checkoutButton = Button(self, text="Checkout", background = "#C06C84",
           command=self.master.checkout_cart, height=10, width=40, font = "Arial 16 bold")
         self.checkoutButton.pack()
+
+
+    def update_total_calories_label(self):
+        self.total_calories_label.config(text=f"{self.master.get_total_calories()} Total Calories Today")

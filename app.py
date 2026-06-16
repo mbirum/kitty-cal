@@ -78,7 +78,7 @@ class KittyCalApp(Tk):
             for item, value in self.calories_today.items():
                 f.write(f"{item}={int(value)}\n")
         subprocess.run(["./gitpush.sh"], check=True)
-        self.update_total_calories_label()
+        self.home_frame.update_total_calories_label()
 
 
     def add_to_cart(self, item, quantity):
@@ -94,9 +94,6 @@ class KittyCalApp(Tk):
                         self.calories_today["minnow_cal"] + self.calories_today["egg_cal"] +
                         self.calories_today["giblet_cal"])
         return total_calories
-
-    def update_total_calories_label(self):
-        total_calories_label.config(text=f"{self.get_total_calories()} Total Calories Today")
         
     def checkout_cart(self):
         self.home_frame.destroy()
