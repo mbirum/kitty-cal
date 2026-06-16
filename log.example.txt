@@ -1,0 +1,13 @@
+wet_quantity=50
+wet_cal=30
+dry_quantity=1
+dry_cal=120
+minnows_quantity=0
+minnows_cal=0
+eggs_quantity=0
+eggs_cal=0
+giblets_quantity=0
+giblets_cal=0
+bova_taken=1
+drops_taken=2
+nausea_taken=0
