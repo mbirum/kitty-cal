@@ -1,147 +1,113 @@
 #!/usr/bin/python	
 from tkinter import *
 from datetime import date
+from cart import CartFrame
+from home import HomeFrame
 import subprocess
 import os
 
-root = Tk()
-root.wm_title("KittyCal")
-root.configure(bg="#99B898")
-root.attributes("-fullscreen", True)
+class KittyCalApp(Tk):
 
-today = date.today()
-log_file_path = f'log/{today}.txt'
+    wet_default_quantity = 50
+    wet_cal_per_gram = 0.6
 
-wet_default_quantity = 50
-wet_cal_per_gram = 0.6
+    dry_cal_per_cup = 120
+    dry_default_quantity = 1
 
-dry_cal_per_cup = 120
-dry_default_quantity = 1
+    minnow_cal_per_unit = 2
+    minnow_default_quantity = 5
 
-minnow_cal_per_unit = 2
-minnow_default_quantity = 5
+    egg_cal_per_unit = 10
+    egg_default_quantity = 1
 
-egg_cal_per_unit = 10
-egg_default_quantity = 1
+    giblet_cal_per_unit = 2
+    giblet_default_quantity = 1
 
-giblet_cal_per_unit = 2
-giblet_default_quantity = 1
+    bova_needed_per_day = 2
+    drop_needed_per_day = 4
+    nausea_needed_per_day = 1
 
-bova_needed_per_day = 2
-drop_needed_per_day = 4
-nausea_needed_per_day = 1
+    cart = {}
 
-print("Initializing calories for today...")
-calories_today = {
-    "wet_cal": 0,
-    "wet_quantity": 0,
-    "dry_cal": 0,
-    "dry_quantity": 0,
-    "minnow_cal": 0,
-    "minnow_quantity": 0,
-    "egg_cal": 0,
-    "egg_quantity": 0,
-    "giblet_cal": 0,
-    "giblet_quantity": 0,
-    "bova_taken": 0,
-    "drops_taken": 0,
-    "nausea_taken": 0
-}
+    def __init__(self):
+        super().__init__()
+        self.wm_title("KittyCal")
+        self.attributes("-fullscreen", True)
+        self.get_initial_calories()
+        self.load_calories_today()
+        self.home_frame = HomeFrame(self)
+        self.home_frame.pack(fill=BOTH, expand=True)
 
-cart = {}
-
-def load_calories_today():
-    print("Loading calories for today...")
-    subprocess.run(["./gitpull.sh"], check=True)
-    if os.path.exists(log_file_path):
-        with open(log_file_path, "r") as f:
-            for line in f:
-                item, value = line.strip().split("=")
-                calories_today[item] = int(value)
-    else:
-        with open(log_file_path, "w") as f:
-            for item, value in calories_today.items():
-                f.write(f"{item}={value}\n")
-
-def save_calories_today():
-    print("Saving calories for today...")
-    with open(log_file_path, "w") as f:
-        for item, value in calories_today.items():
-            f.write(f"{item}={int(value)}\n")
-    subprocess.run(["./gitpush.sh"], check=True)
-    update_total_calories_label()
+    def get_initial_calories(self):
+        print("Initializing calories for today...")
+        self.calories_today = {
+            "wet_cal": 0,
+            "wet_quantity": 0,
+            "dry_cal": 0,
+            "dry_quantity": 0,
+            "minnow_cal": 0,
+            "minnow_quantity": 0,
+            "egg_cal": 0,
+            "egg_quantity": 0,
+            "giblet_cal": 0,
+            "giblet_quantity": 0,
+            "bova_taken": 0,
+            "drops_taken": 0,
+            "nausea_taken": 0
+        }
+        return self.calories_today
 
 
-def add_to_cart(item, quantity):
-    print(f"Adding {quantity} {item} to cart...")
-    if item in cart:
-        cart[item] += quantity
-    else:
-        cart[item] = quantity
+    def load_calories_today(self):
+        print("Loading calories for today...")
+        self.log_file_path = f"log/{date.today()}.txt"
+        subprocess.run(["./gitpull.sh"], check=True)
+        if os.path.exists(self.log_file_path):
+            with open(self.log_file_path, "r") as f:
+                for line in f:
+                    item, value = line.strip().split("=")
+                    self.calories_today[item] = int(value)
+        else:
+            with open(self.log_file_path, "w") as f:
+                for item, value in self.calories_today.items():
+                    f.write(f"{item}={value}\n")
 
-def checkout_cart():
-    print("Checking out cart...")
-    for item, quantity in cart.items():
-        if item in calories_today:
-            calories_today[item] += quantity
-            if item == "wet_quantity":
-                calories_today["wet_cal"] += int(quantity * wet_cal_per_gram)
-            elif item == "dry_quantity":
-                calories_today["dry_cal"] += int(quantity * dry_cal_per_cup)
-            elif item == "minnow_quantity":
-                calories_today["minnow_cal"] += int(quantity * minnow_cal_per_unit)
-            elif item == "egg_quantity":
-                calories_today["egg_cal"] += int(quantity * egg_cal_per_unit)
-            elif item == "giblet_quantity":
-                calories_today["giblet_cal"] += int(quantity * giblet_cal_per_unit)
-    save_calories_today()
-
-def get_total_calories():
-    print("Calculating total calories...")
-    total_calories = (calories_today["wet_cal"] + calories_today["dry_cal"] +
-                      calories_today["minnow_cal"] + calories_today["egg_cal"] +
-                      calories_today["giblet_cal"])
-    return total_calories
-
-def update_total_calories_label():
-    total_calories_label.config(text=f"{get_total_calories()} Total Calories Today")
-
-def btnExit():
-  	root.destroy()
-
-# we can exit when we press the escape key
-def end_fullscreen(event):
-	root.attributes("-fullscreen", False)
+    def save_calories_today(self):
+        print("Saving calories for today...")
+        with open(self.log_file_path, "w") as f:
+            for item, value in self.calories_today.items():
+                f.write(f"{item}={int(value)}\n")
+        subprocess.run(["./gitpush.sh"], check=True)
+        self.update_total_calories_label()
 
 
-load_calories_today()
+    def add_to_cart(self, item, quantity):
+        print(f"Adding {item} to cart...")
+        if item in self.cart:
+            self.cart[item] += quantity
+        else:
+            self.cart[item] = quantity
 
-label_header = Label(root, text="Junie Birum", font="Verdana 26 bold",
-			fg="#000",
-			bg="#99B898",
-			pady = 60,
-			padx = 100)
+    def get_total_calories(self):
+        print("Calculating total calories...")
+        total_calories = (self.calories_today["wet_cal"] + self.calories_today["dry_cal"] +
+                        self.calories_today["minnow_cal"] + self.calories_today["egg_cal"] +
+                        self.calories_today["giblet_cal"])
+        return total_calories
 
-total_calories_label = Label(root, text=f"{get_total_calories()} Total Calories Today", font="Verdana 20 bold",
-            fg="#000",
-            bg="#99B898",
-            pady = 20,
-            padx = 100)
+    def update_total_calories_label(self):
+        total_calories_label.config(text=f"{self.get_total_calories()} Total Calories Today")
+        
+    def checkout_cart(self):
+        self.home_frame.destroy()
+        self.cart_frame = CartFrame(self.cart, self)
+        self.cart_frame.pack(fill=BOTH, expand=True)
+        
+    # we can exit when we press the escape key
+    def end_fullscreen(self, event):
+        self.attributes("-fullscreen", False)
 
-exitButton = Button(root, text="Exit", background = "#C06C84",
-      command=btnExit, height=10, width=40, font = "Arial 16 bold")
-	
-wetFoodButton = Button(root, text="Wet Food", background = "#C06C84",
-      command=lambda: add_to_cart("wet_quantity", wet_default_quantity), height=10, width=40, font = "Arial 16 bold")
 
-checkoutButton = Button(root, text="Checkout", background = "#C06C84",
-      command=checkout_cart, height=10, width=40, font = "Arial 16 bold")
-
-label_header.grid(row=0, column=0)
-total_calories_label.grid(row=1, column=0)
-wetFoodButton.grid(row = 2 ,column =1)
-exitButton.grid(row = 2 ,column = 0)
-checkoutButton.grid(row = 3 ,column = 0)
-root.bind("<Escape>", end_fullscreen)
-
-root.mainloop()
+if __name__ == "__main__":
+    app = KittyCalApp()
+    app.mainloop()
