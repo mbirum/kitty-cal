@@ -69,6 +69,8 @@ def save_calories_today():
         for item, value in calories_today.items():
             f.write(f"{item}={int(value)}\n")
     subprocess.run(["./gitpush.sh"], check=True)
+    update_total_calories_label()
+
 
 def add_to_cart(item, quantity):
     print(f"Adding {quantity} {item} to cart...")
@@ -100,6 +102,9 @@ def get_total_calories():
                       calories_today["minnow_cal"] + calories_today["egg_cal"] +
                       calories_today["giblet_cal"])
     return total_calories
+
+def update_total_calories_label():
+    total_calories_label.config(text=f"{get_total_calories()} Total Calories Today")
 
 def btnExit():
   	root.destroy()
