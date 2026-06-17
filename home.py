@@ -27,7 +27,7 @@ class HomeFrame(ttk.Frame):
         
         # Calories display inline with header
         self.total_calories_label = ttk.Label(header_frame, 
-            text=f"{self.master.get_total_calories()} kcal", 
+            text=f"{self.master.get_total_calories()}/250 kcal", 
             style='Subheader.TLabel')
         self.total_calories_label.pack(side=RIGHT)
 
@@ -97,17 +97,22 @@ class HomeFrame(ttk.Frame):
 
         # Button container aligned to the right so actions don't span full width
         button_frame = ttk.Frame(footer_frame)
-        button_frame.pack(side=RIGHT, padx=4, pady=4)
+        button_frame.pack(fill=X, pady=(0, 0))
 
-        # Exit button to the left of Checkout (small)
-        self.exitButton = ttk.Button(button_frame, text="EXIT",
-            command=self.master.quit, style='Small.TButton', width=8)
-        self.exitButton.pack(side=RIGHT, padx=(4,0))
-
-        # Checkout button (small) — match Exit button size and style
+        # Checkout button
         self.checkoutButton = ttk.Button(button_frame, text="🛒 CHECKOUT",
-            command=self.master.checkout_cart, style='Small.TButton', width=8)
-        self.checkoutButton.pack(side=RIGHT, padx=(0,4))
+            command=self.master.checkout_cart, style='NarrowAccent.TButton')
+        self.checkoutButton.pack(fill=X)
+
+        # Exit button
+        self.confirm_button = ttk.Button(button_frame, text="EXIT", 
+            command=self.master.quit, style='NarrowAccent.TButton')
+        self.confirm_button.pack(fill=X, pady=(4,0))
+
+        # self.exitButton = ttk.Button(button_frame, text="EXIT",
+        #     command=self.master.quit, style='Small.TButton', width=8)
+        # self.exitButton.pack(side=RIGHT, padx=(4,0))
+
 
     
     def update_cart_display(self):

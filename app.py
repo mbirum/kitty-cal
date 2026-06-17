@@ -80,6 +80,11 @@ class KittyCalApp(Tk):
                   background=[('pressed', '#ff4d85'), ('active', accent_primary)],
                   foreground=[('pressed', text_primary), ('active', text_primary)])
 
+        style.configure('NarrowAccent.TButton', font=('Helvetica', 14, 'bold'), padding=15)
+        style.map('NarrowAccent.TButton',
+                  background=[('pressed', '#ff4d85'), ('active', accent_primary)],
+                  foreground=[('pressed', text_primary), ('active', text_primary)])
+
         # Smaller button style for compact footer actions
         style.configure('Small.TButton', font=('Helvetica', 12), padding=6)
         style.map('Small.TButton',
