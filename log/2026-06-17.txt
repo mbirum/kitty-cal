@@ -1,7 +1,7 @@
-wet_cal=0
-wet_quantity=0
-dry_cal=120
-dry_quantity=1
+wet_cal=30
+wet_quantity=50
+dry_cal=360
+dry_quantity=3
 minnow_cal=0
 minnow_quantity=0
 egg_cal=20
