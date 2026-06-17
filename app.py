@@ -1,5 +1,6 @@
-#!/usr/bin/python	
+#!/usr/bin/python
 from tkinter import *
+from tkinter import ttk
 from datetime import date
 from cart import CartFrame
 from home import HomeFrame
@@ -33,10 +34,52 @@ class KittyCalApp(Tk):
         super().__init__()
         self.wm_title("KittyCal")
         self.attributes("-fullscreen", True)
+        self.configure(bg="#0f1419")
+        
+        # Configure custom ttk styles
+        self.configure_styles()
+        
         self.get_initial_calories()
         self.load_calories_today()
         self.home_frame = HomeFrame(self)
         self.home_frame.pack(fill=BOTH, expand=True)
+    
+    def configure_styles(self):
+        """Configure modern ttk styles with custom colors"""
+        style = ttk.Style()
+        style.theme_use('clam')
+        
+        # Define color palette
+        bg_dark = "#0f1419"
+        bg_light = "#1a2332"
+        accent_primary = "#ff6b9d"
+        accent_secondary = "#a78bfa"
+        text_primary = "#ffffff"
+        text_secondary = "#b0b9c1"
+        
+        # Configure frame background
+        style.configure('TFrame', background=bg_dark)
+        style.configure('Card.TFrame', background=bg_light, relief='solid', borderwidth=1)
+        
+        # Configure labels
+        style.configure('TLabel', background=bg_dark, foreground=text_primary, font=('Helvetica', 11))
+        style.configure('Header.TLabel', background=bg_dark, foreground=text_primary, font=('Helvetica', 28, 'bold'))
+        style.configure('Subheader.TLabel', background=bg_dark, foreground=text_secondary, font=('Helvetica', 14))
+        style.configure('Card.TLabel', background=bg_light, foreground=text_primary, font=('Helvetica', 11))
+        
+        # Configure buttons
+        style.configure('Primary.TButton', font=('Helvetica', 13, 'bold'), padding=15)
+        style.map('Primary.TButton',
+                  background=[('pressed', accent_secondary), ('active', accent_primary)],
+                  foreground=[('pressed', bg_dark), ('active', bg_dark)])
+        
+        style.configure('Accent.TButton', font=('Helvetica', 13, 'bold'), padding=15)
+        style.map('Accent.TButton',
+                  background=[('pressed', '#ff4d85'), ('active', accent_primary)],
+                  foreground=[('pressed', text_primary), ('active', text_primary)])
+        
+        # Configure separator
+        style.configure('TSeparator', background=bg_light)
 
     def get_initial_calories(self):
         print("Initializing calories for today...")
