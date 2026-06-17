@@ -17,6 +17,18 @@ class HomeFrame(ttk.Frame):
         header_frame = ttk.Frame(main_container)
         header_frame.pack(fill=X, pady=(0, 30))
 
+        self.label_header = ttk.Label(header_frame, text="Junie Birum", style='Header.TLabel')
+        self.label_header.pack(side=LEFT, padx=(0, 20))
+
+       # Calories display card
+        calories_frame = ttk.Frame(main_container, style='Card.TFrame')
+        calories_frame.pack(fill=X, pady=(0, 10))
+        
+        self.total_calories_label = ttk.Label(calories_frame, 
+            text=f"{self.master.get_total_calories()} Total Calories Today", 
+            style='Subheader.TLabel')
+        self.total_calories_label.pack(pady=5, padx=5)
+
         # Cart display section
         cart_frame = ttk.Frame(main_container, style='Card.TFrame')
         cart_frame.pack(fill=X, pady=(0, 20))
@@ -27,21 +39,9 @@ class HomeFrame(ttk.Frame):
         self.cart_display = ttk.Label(cart_frame, text="(empty)", style='Card.TLabel')
         self.cart_display.pack(side=LEFT, padx=10, pady=8, fill=X, expand=True)
         
-        self.label_header = ttk.Label(header_frame, text="Junie Birum", style='Header.TLabel')
-        self.label_header.pack(side=LEFT, padx=(0, 20))
-        
         # Separator
         separator = ttk.Separator(header_frame, orient=HORIZONTAL)
         separator.pack(side=LEFT, fill=X, expand=True)
-        
-        # Calories display card
-        calories_frame = ttk.Frame(main_container, style='Card.TFrame')
-        calories_frame.pack(fill=X, pady=(0, 40))
-        
-        self.total_calories_label = ttk.Label(calories_frame, 
-            text=f"{self.master.get_total_calories()} Total Calories Today", 
-            style='Subheader.TLabel')
-        self.total_calories_label.pack(pady=20, padx=20)
         
         # Food options section
         options_frame = ttk.Frame(main_container)
