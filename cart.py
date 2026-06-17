@@ -40,7 +40,14 @@ class CartFrame(ttk.Frame):
                 lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
             )
             
-            canvas.create_window((0, 0), window=item_labels_frame, anchor="nw")
+            window_id = canvas.create_window((0, 0), window=item_labels_frame, anchor="nw")
+            # Keep the embedded frame width in sync with the canvas so rows span full width
+            def _on_canvas_config(event):
+                try:
+                    canvas.itemconfig(window_id, width=event.width)
+                except Exception:
+                    pass
+            canvas.bind("<Configure>", _on_canvas_config)
             canvas.configure(yscrollcommand=scrollbar.set)
             
             canvas.pack(side=LEFT, fill=BOTH, expand=True)
@@ -67,7 +74,7 @@ class CartFrame(ttk.Frame):
 
             for item, quantity in self.cart.items():
                 item_row = ttk.Frame(item_labels_frame)
-                item_row.pack(fill=X, pady=6, padx=4)
+                item_row.pack(fill=X, expand=True, pady=6, padx=4)
 
                 name, calc = readable_map.get(item, (item, lambda q, m: 0))
                 icon = icon_map.get(item, "")

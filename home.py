@@ -129,13 +129,24 @@ class HomeFrame(ttk.Frame):
             style='Accent.TButton')
         nausea_btn.pack(fill=X, padx=4, pady=(0, 8))
         
-        # Checkout button - footer, always visible and large
+        # Footer with compact action buttons: small Exit to left of Checkout
         footer_frame = ttk.Frame(main_container)
         footer_frame.pack(fill=X, pady=(0, 0))
-        
-        self.checkoutButton = ttk.Button(footer_frame, text="🛒 CHECKOUT",
-            command=self.master.checkout_cart, style='Accent.TButton')
-        self.checkoutButton.pack(fill=X)
+
+        # Button container aligned to the right so actions don't span full width
+        button_frame = ttk.Frame(footer_frame)
+        button_frame.pack(side=RIGHT, padx=4, pady=4)
+
+        # Exit button to the left of Checkout (small)
+        self.exitButton = ttk.Button(button_frame, text="EXIT",
+            command=self.master.quit, style='Small.TButton', width=8)
+        self.exitButton.pack(side=RIGHT, padx=(4,0))
+
+        # Checkout button (small) — match Exit button size and style
+        self.checkoutButton = ttk.Button(button_frame, text="🛒 CHECKOUT",
+            command=self.master.checkout_cart, style='Small.TButton', width=12)
+        self.checkoutButton.pack(side=RIGHT, padx=(0,4))
+
     
     def update_cart_display(self):
         """Update the cart display with current items"""

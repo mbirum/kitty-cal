@@ -79,6 +79,12 @@ class KittyCalApp(Tk):
         style.map('Accent.TButton',
                   background=[('pressed', '#ff4d85'), ('active', accent_primary)],
                   foreground=[('pressed', text_primary), ('active', text_primary)])
+
+        # Smaller button style for compact footer actions
+        style.configure('Small.TButton', font=('Helvetica', 12), padding=6)
+        style.map('Small.TButton',
+              background=[('pressed', '#ff4d85'), ('active', accent_primary)],
+              foreground=[('pressed', text_primary), ('active', text_primary)])
         
         # Configure separator
         style.configure('TSeparator', background=bg_light)
