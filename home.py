@@ -41,93 +41,55 @@ class HomeFrame(ttk.Frame):
         self.cart_display = ttk.Label(cart_frame, text="(empty)", style='Card.TLabel')
         self.cart_display.pack(side=LEFT, padx=8, pady=6, fill=X, expand=True)
         
-        # Scrollable options area
-        canvas = Canvas(main_container, bg="#0f1419", highlightthickness=0)
-        scrollbar = ttk.Scrollbar(main_container, orient="vertical", command=canvas.yview)
-        
-        scrollable_frame = ttk.Frame(canvas)
-        scrollable_frame.bind(
-            "<Configure>",
-            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
-        )
-        
-        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
-        
-        canvas.pack(side=LEFT, fill=BOTH, expand=True, pady=(0, 8))
-        scrollbar.pack(side=RIGHT, fill=Y)
-        
-        # Food options section
-        food_label = ttk.Label(scrollable_frame, text="FOOD", style='Subheader.TLabel')
-        food_label.pack(pady=(10, 6), padx=4)
-        
-        # Food buttons in 2-column layout
-        food_frame = ttk.Frame(scrollable_frame)
-        food_frame.pack(fill=X, padx=4, pady=(0, 8))
-        
-        # Wet Food Button
-        self.wetFoodButton = ttk.Button(food_frame, text="🍖 Wet Food", 
+        # Item buttons arranged in a compact 2-row grid (no scrolling)
+        items_frame = ttk.Frame(main_container)
+        items_frame.pack(fill=X, padx=4, pady=(0, 8))
+
+        # Configure 4 equal-width columns so buttons share space
+        for i in range(4):
+            items_frame.columnconfigure(i, weight=1)
+
+        # Row 0
+        self.wetFoodButton = ttk.Button(items_frame, text="🍖 Wet Food",
             command=lambda: self.master.add_to_cart("wet_quantity", self.master.wet_default_quantity),
             style='Accent.TButton')
-        self.wetFoodButton.pack(side=LEFT, fill=BOTH, expand=True, padx=2, pady=4)
-        
-        # Dry Food Button
-        self.dryFoodButton = ttk.Button(food_frame, text="🌾 Dry Food",
+        self.wetFoodButton.grid(row=0, column=0, sticky='nsew', padx=4, pady=4)
+
+        self.dryFoodButton = ttk.Button(items_frame, text="🌾 Dry Food",
             command=lambda: self.master.add_to_cart("dry_quantity", self.master.dry_default_quantity),
             style='Accent.TButton')
-        self.dryFoodButton.pack(side=LEFT, fill=BOTH, expand=True, padx=2, pady=4)
-        
-        # Extras section
-        extras_label = ttk.Label(scrollable_frame, text="EXTRAS", style='Subheader.TLabel')
-        extras_label.pack(pady=(12, 6), padx=4)
-        
-        # Extras in 2-column grid layout
-        extras_row1 = ttk.Frame(scrollable_frame)
-        extras_row1.pack(fill=X, padx=4, pady=(0, 4))
-        
-        # Minnow button
-        minnow_btn = ttk.Button(extras_row1, text="🐟 Minnow",
+        self.dryFoodButton.grid(row=0, column=1, sticky='nsew', padx=4, pady=4)
+
+        minnow_btn = ttk.Button(items_frame, text="🐟 Minnow",
             command=lambda: self.add_extra_item("minnow_quantity"),
             style='Accent.TButton')
-        minnow_btn.pack(side=LEFT, fill=BOTH, expand=True, padx=2)
-        
-        # Egg button
-        egg_btn = ttk.Button(extras_row1, text="🥚 Egg",
+        minnow_btn.grid(row=0, column=2, sticky='nsew', padx=4, pady=4)
+
+        egg_btn = ttk.Button(items_frame, text="🥚 Egg",
             command=lambda: self.add_extra_item("egg_quantity"),
             style='Accent.TButton')
-        egg_btn.pack(side=LEFT, fill=BOTH, expand=True, padx=2)
-        
-        # Giblet button takes full width on second row
-        giblet_btn = ttk.Button(scrollable_frame, text="🦴 Giblet",
+        egg_btn.grid(row=0, column=3, sticky='nsew', padx=4, pady=4)
+
+        # Row 1
+        giblet_btn = ttk.Button(items_frame, text="🦴 Giblet",
             command=lambda: self.add_extra_item("giblet_quantity"),
             style='Accent.TButton')
-        giblet_btn.pack(fill=X, padx=4, pady=(0, 8))
-        
-        # Medicines section
-        medicines_label = ttk.Label(scrollable_frame, text="MEDICINES", style='Subheader.TLabel')
-        medicines_label.pack(pady=(12, 6), padx=4)
-        
-        # Medicines in 2-column grid layout
-        medicines_row1 = ttk.Frame(scrollable_frame)
-        medicines_row1.pack(fill=X, padx=4, pady=(0, 4))
-        
-        # Bova button
-        bova_btn = ttk.Button(medicines_row1, text="💊 Bova",
+        giblet_btn.grid(row=1, column=0, sticky='nsew', padx=4, pady=4)
+
+        bova_btn = ttk.Button(items_frame, text="💊 Bova",
             command=lambda: self.add_medicine("bova_taken"),
             style='Accent.TButton')
-        bova_btn.pack(side=LEFT, fill=BOTH, expand=True, padx=2)
-        
-        # Drops button
-        drops_btn = ttk.Button(medicines_row1, text="💧 Drops",
+        bova_btn.grid(row=1, column=1, sticky='nsew', padx=4, pady=4)
+
+        drops_btn = ttk.Button(items_frame, text="💧 Drops",
             command=lambda: self.add_medicine("drops_taken"),
             style='Accent.TButton')
-        drops_btn.pack(side=LEFT, fill=BOTH, expand=True, padx=2)
-        
-        # Nausea Meds button takes full width on second row
-        nausea_btn = ttk.Button(scrollable_frame, text="🤢 Nausea Meds",
+        drops_btn.grid(row=1, column=2, sticky='nsew', padx=4, pady=4)
+
+        nausea_btn = ttk.Button(items_frame, text="🤢 Nausea Meds",
             command=lambda: self.add_medicine("nausea_taken"),
             style='Accent.TButton')
-        nausea_btn.pack(fill=X, padx=4, pady=(0, 8))
+        nausea_btn.grid(row=1, column=3, sticky='nsew', padx=4, pady=4)
         
         # Footer with compact action buttons: small Exit to left of Checkout
         footer_frame = ttk.Frame(main_container)
@@ -144,7 +106,7 @@ class HomeFrame(ttk.Frame):
 
         # Checkout button (small) — match Exit button size and style
         self.checkoutButton = ttk.Button(button_frame, text="🛒 CHECKOUT",
-            command=self.master.checkout_cart, style='Small.TButton', width=12)
+            command=self.master.checkout_cart, style='Small.TButton', width=8)
         self.checkoutButton.pack(side=RIGHT, padx=(0,4))
 
     
