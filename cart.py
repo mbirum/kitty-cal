@@ -11,9 +11,6 @@ class CartFrame(Frame):
         self.cart_label = Label(self, text="Cart", font="Verdana 20 bold")
         self.cart_label.pack(pady=10)
 
-        self.cart_listbox = Listbox(self, width=50, height=10)
-        self.cart_listbox.pack(pady=10)
-
         self.confirm_button = Button(self, text="Confirm", command=self.confirm_cart)
         self.confirm_button.pack(pady=10)
 
@@ -33,4 +30,5 @@ class CartFrame(Frame):
                     self.master.calories_today["egg_cal"] += int(quantity * self.master.egg_cal_per_unit)
                 elif item == "giblet_quantity":
                     self.master.calories_today["giblet_cal"] += int(quantity * self.master.giblet_cal_per_unit)
+        self.cart_label.config(text="Saving...")
         self.master.save_calories_today()
