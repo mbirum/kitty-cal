@@ -34,7 +34,7 @@ class HomeFrame(ttk.Frame):
 
         # Cart display section - compact
         cart_frame = ttk.Frame(main_container, style='Card.TFrame')
-        cart_frame.pack(fill=X, pady=(0, 25))
+        cart_frame.pack(fill=X, pady=(10, 25))
         
         cart_label = ttk.Label(cart_frame, text="Cart:", style='Subheader.TLabel')
         cart_label.pack(side=LEFT, padx=8, pady=6)
