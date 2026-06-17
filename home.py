@@ -7,6 +7,11 @@ class HomeFrame(ttk.Frame):
         super().__init__(master)
         self.master = master
         self.create_widgets()
+        # Ensure cart display reflects current app cart when frame is created
+        try:
+            self.update_cart_display()
+        except Exception:
+            pass
 
     def create_widgets(self):
         # Main container with padding

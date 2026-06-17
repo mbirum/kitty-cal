@@ -24,6 +24,11 @@ class CartFrame(ttk.Frame):
         # Cart items
         items_frame = ttk.Frame(main_container, style='Card.TFrame')
         items_frame.pack(fill=BOTH, expand=True, pady=(0, 20))
+        # expose for updates when quantities change
+        self.items_frame = items_frame
+
+        # Initialize item widget refs map
+        self.item_widgets = {}
         
         if not self.cart.items():
             empty_label = ttk.Label(items_frame, text="Your cart is empty", style='Card.TLabel')
@@ -31,16 +36,83 @@ class CartFrame(ttk.Frame):
         else:
             item_labels_frame = ttk.Frame(items_frame)
             item_labels_frame.pack(fill=BOTH, expand=True, padx=20, pady=20)
-            
+
+            # Human readable name and calorie calculation map
+            readable_map = {
+                "wet_quantity": ("Wet Food", lambda q, m: int(q * getattr(m, 'wet_cal_per_gram', 0))),
+                "dry_quantity": ("Dry Food", lambda q, m: int(q * getattr(m, 'dry_cal_per_cup', 0))),
+                "minnow_quantity": ("Minnow", lambda q, m: int(q * getattr(m, 'minnow_cal_per_unit', 0))),
+                "egg_quantity": ("Egg", lambda q, m: int(q * getattr(m, 'egg_cal_per_unit', 0))),
+                "giblet_quantity": ("Giblet", lambda q, m: int(q * getattr(m, 'giblet_cal_per_unit', 0)))
+            }
+
+            icon_map = {}
+            if hasattr(self.master, 'get_cart_icon_map'):
+                icon_map = self.master.get_cart_icon_map()
+
+            # Keep references to widgets so we can update them when quantities change
+            self.item_widgets = {}
+
             for item, quantity in self.cart.items():
                 item_row = ttk.Frame(item_labels_frame)
                 item_row.pack(fill=X, pady=8)
-                
-                item_name = ttk.Label(item_row, text=f"{item}", style='Card.TLabel')
-                item_name.pack(side=LEFT)
-                
-                item_qty = ttk.Label(item_row, text=f"× {quantity}", style='Subheader.TLabel')
-                item_qty.pack(side=RIGHT)
+
+                name, calc = readable_map.get(item, (item, lambda q, m: 0))
+                icon = icon_map.get(item, "")
+
+                # Left: icon + readable name
+                left_text = f"{icon} {name}"
+                left_label = ttk.Label(item_row, text=left_text, style='Card.TLabel')
+                left_label.pack(side=LEFT)
+
+                # Right side: calories and quantity controls
+                right_frame = ttk.Frame(item_row)
+                right_frame.pack(side=RIGHT)
+
+                # Calculated calories label
+                calories = calc(quantity, self.master)
+                cal_label = ttk.Label(right_frame, text=f"{calories} kcal", style='Subheader.TLabel')
+                cal_label.pack(side=RIGHT, padx=(8,0))
+
+                # Quantity controls: - [qty] +
+                qty_frame = ttk.Frame(right_frame)
+                qty_frame.pack(side=RIGHT)
+
+                # Determine increment per item type
+                if item == 'wet_quantity':
+                    incr = 5
+                elif item == 'dry_quantity':
+                    incr = 0.5
+                else:
+                    incr = 1
+
+                # Decrement button
+                dec_btn = ttk.Button(qty_frame, text='−', width=3,
+                    command=lambda i=item, d=-incr: self.adjust_quantity(i, d))
+                dec_btn.pack(side=LEFT)
+
+                # Quantity label
+                def fmt_qty(q):
+                    if isinstance(q, float) and not q.is_integer():
+                        return f"{q:.1f}x"
+                    else:
+                        return f"{int(q)}x"
+
+                qty_label = ttk.Label(qty_frame, text=fmt_qty(quantity), style='Subheader.TLabel', width=6, anchor='center')
+                qty_label.pack(side=LEFT, padx=4)
+
+                # Increment button
+                inc_btn = ttk.Button(qty_frame, text='+', width=3,
+                    command=lambda i=item, d=incr: self.adjust_quantity(i, d))
+                inc_btn.pack(side=LEFT)
+
+                # Save widget refs
+                self.item_widgets[item] = {
+                    'qty_label': qty_label,
+                    'cal_label': cal_label,
+                    'incr': incr,
+                    'row': item_row
+                }
         
         # Separator
         sep2 = ttk.Separator(main_container, orient=HORIZONTAL)
@@ -63,6 +135,94 @@ class CartFrame(ttk.Frame):
     def go_back(self):
         """Return to home frame without saving"""
         self.master.restore_home_frame()
+
+    def adjust_quantity(self, item, delta):
+        """Adjust the quantity for `item` by `delta` and update UI labels."""
+        # Ensure item exists
+        if item not in self.cart:
+            return
+
+        current = self.cart[item]
+        # support floats
+        new_qty = current + delta
+
+        # Prevent negative quantities
+        if new_qty < 0:
+            new_qty = 0
+
+        # If increment is integer-like, store as int
+        incr = self.item_widgets.get(item, {}).get('incr', 1)
+        if isinstance(incr, int) and float(new_qty).is_integer():
+            new_qty = int(new_qty)
+
+        self.cart[item] = new_qty
+
+        # Update labels
+        widgets = self.item_widgets.get(item)
+        if widgets:
+            qty_label = widgets['qty_label']
+            cal_label = widgets['cal_label']
+
+            # format qty
+            if isinstance(new_qty, float) and not float(new_qty).is_integer():
+                qty_text = f"{new_qty:.1f}x"
+            else:
+                qty_text = f"{int(new_qty)}x"
+            qty_label.config(text=qty_text)
+
+            # recalc calories using same calc logic as in create_widgets
+            # reuse readable_map logic inline
+            if item == "wet_quantity":
+                calories = int(new_qty * getattr(self.master, 'wet_cal_per_gram', 0))
+            elif item == "dry_quantity":
+                calories = int(new_qty * getattr(self.master, 'dry_cal_per_cup', 0))
+            elif item == "minnow_quantity":
+                calories = int(new_qty * getattr(self.master, 'minnow_cal_per_unit', 0))
+            elif item == "egg_quantity":
+                calories = int(new_qty * getattr(self.master, 'egg_cal_per_unit', 0))
+            elif item == "giblet_quantity":
+                calories = int(new_qty * getattr(self.master, 'giblet_cal_per_unit', 0))
+            else:
+                calories = 0
+
+            cal_label.config(text=f"{calories} kcal")
+
+        # If quantity dropped to zero, remove the item row and cart entry
+        if float(new_qty) == 0:
+            # remove from cart data
+            try:
+                del self.cart[item]
+            except Exception:
+                pass
+            # destroy widgets
+            if widgets and 'row' in widgets:
+                try:
+                    widgets['row'].destroy()
+                except Exception:
+                    pass
+            # remove widget refs
+            if item in self.item_widgets:
+                try:
+                    del self.item_widgets[item]
+                except Exception:
+                    pass
+
+            # if the cart is now empty, show empty label in items_frame
+            if not self.cart:
+                for child in list(self.items_frame.winfo_children()):
+                    try:
+                        child.destroy()
+                    except Exception:
+                        pass
+                empty_label = ttk.Label(self.items_frame, text="Your cart is empty", style='Card.TLabel')
+                empty_label.pack(pady=20, padx=20)
+
+        # Update the home frame cart display if present
+        if hasattr(self.master, 'home_frame') and hasattr(self.master.home_frame, 'update_cart_display'):
+            try:
+                self.master.home_frame.update_cart_display()
+            except Exception:
+                pass
 
     def confirm_cart(self):
         print("Checking out cart...")
