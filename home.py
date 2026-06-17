@@ -1,6 +1,7 @@
 from tkinter import *
 
-class HomeFrame(Frame):
+class HomeFrame(Frame):    
+
     def __init__(self, master=None):
         super().__init__(master, bg="#99B898")
         self.master = master
@@ -21,9 +22,10 @@ class HomeFrame(Frame):
             pady = 20,
             padx = 100)
         self.total_calories_label.grid(row=1, column=0, columnspan=2)
+
+        self.j1_image = PhotoImage(file="j1.png")
         
-        j1_image = PhotoImage(file="j1.png")
-        self.wetFoodButton = Button(self, image=j1_image, background = "#C06C84",
+        self.wetFoodButton = Button(self, text="Wet Food", image=self.j1_image, background = "#C06C84",
           command=lambda: self.master.add_to_cart("wet_quantity", self.master.wet_default_quantity), height=5, width=20, font = "Arial 13 bold")
         self.wetFoodButton.grid(row=2, column=0, padx=15, pady=15)
 
