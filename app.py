@@ -78,6 +78,7 @@ class KittyCalApp(Tk):
             for item, value in self.calories_today.items():
                 f.write(f"{item}={int(value)}\n")
         subprocess.run(["./gitpush.sh"], check=True)
+        self.cart = {}
         self.restore_home_frame()
 
 
