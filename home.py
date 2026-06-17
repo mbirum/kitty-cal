@@ -34,7 +34,7 @@ class HomeFrame(ttk.Frame):
 
         # Cart display section - compact
         cart_frame = ttk.Frame(main_container, style='Card.TFrame')
-        cart_frame.pack(fill=X, pady=(0, 8))
+        cart_frame.pack(fill=X, pady=(0, 15))
         
         cart_label = ttk.Label(cart_frame, text="Cart:", style='Subheader.TLabel')
         cart_label.pack(side=LEFT, padx=8, pady=6)
@@ -103,7 +103,7 @@ class HomeFrame(ttk.Frame):
         # Checkout button
         self.checkoutButton = ttk.Button(button_frame, text="🛒 CHECKOUT",
             command=self.master.checkout_cart, style='NarrowAccent.TButton')
-        self.checkoutButton.pack(fill=X, pady=(20,0))
+        self.checkoutButton.pack(fill=X, pady=(30,0))
 
         # Exit button
         self.confirm_button = ttk.Button(button_frame, text="EXIT", 
