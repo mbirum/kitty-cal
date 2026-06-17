@@ -8,6 +8,6 @@ egg_cal=30
 egg_quantity=3
 giblet_cal=0
 giblet_quantity=0
-bova_taken=0
+bova_taken=1
 drops_taken=0
 nausea_taken=1

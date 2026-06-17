@@ -27,7 +27,7 @@ class HomeFrame(ttk.Frame):
         
         # Calories display inline with header
         self.total_calories_label = ttk.Label(header_frame, 
-            text=f"{self.master.get_total_calories()}/250 kcal", 
+            text=f"💊 {self.master.calories_today['bova_taken']} {self.master.get_total_calories()}/250 kcal", 
             style='Subheader.TLabel')
         self.total_calories_label.pack(side=RIGHT)
 
