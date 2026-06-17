@@ -84,7 +84,7 @@ class CartFrame(ttk.Frame):
                 # Calculated calories label (only for food items)
                 calories = calc(quantity, self.master)
                 if calories > 0:
-                    cal_label = ttk.Label(right_frame, text=f"{calories} kcal", style='Subheader.TLabel')
+                    cal_label = ttk.Label(right_frame, text=f"{calories} kcal", style='CartCal.TLabel')
                     cal_label.pack(side=RIGHT, padx=(8,0))
                 else:
                     cal_label = None
@@ -113,7 +113,7 @@ class CartFrame(ttk.Frame):
                     else:
                         return f"{int(q)}x"
 
-                qty_label = ttk.Label(qty_frame, text=fmt_qty(quantity), style='Subheader.TLabel', width=6, anchor='center')
+                qty_label = ttk.Label(qty_frame, text=fmt_qty(quantity), style='CartCal.TLabel', width=6, anchor='center')
                 qty_label.pack(side=LEFT, padx=4)
 
                 # Increment button

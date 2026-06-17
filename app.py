@@ -65,6 +65,7 @@ class KittyCalApp(Tk):
         style.configure('TLabel', background=bg_dark, foreground=text_primary, font=('Helvetica', 13))
         style.configure('Header.TLabel', background=bg_dark, foreground=text_primary, font=('Helvetica', 32, 'bold'))
         style.configure('Subheader.TLabel', background=bg_dark, foreground=text_secondary, font=('Helvetica', 16))
+        style.configure('CartCal.TLabel', background=bg_dark, foreground=text_secondary, font=('Helvetica', 13))
         style.configure('Card.TLabel', background=bg_light, foreground=text_primary, font=('Helvetica', 13))
         
         # Configure buttons

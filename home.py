@@ -88,19 +88,19 @@ class HomeFrame(ttk.Frame):
         # Minnow button
         minnow_btn = ttk.Button(extras_row1, text="🐟 Minnow",
             command=lambda: self.add_extra_item("minnow_quantity"),
-            style='Primary.TButton')
+            style='Accent.TButton')
         minnow_btn.pack(side=LEFT, fill=BOTH, expand=True, padx=2)
         
         # Egg button
         egg_btn = ttk.Button(extras_row1, text="🥚 Egg",
             command=lambda: self.add_extra_item("egg_quantity"),
-            style='Primary.TButton')
+            style='Accent.TButton')
         egg_btn.pack(side=LEFT, fill=BOTH, expand=True, padx=2)
         
         # Giblet button takes full width on second row
         giblet_btn = ttk.Button(scrollable_frame, text="🦴 Giblet",
             command=lambda: self.add_extra_item("giblet_quantity"),
-            style='Primary.TButton')
+            style='Accent.TButton')
         giblet_btn.pack(fill=X, padx=4, pady=(0, 8))
         
         # Medicines section
@@ -114,19 +114,19 @@ class HomeFrame(ttk.Frame):
         # Bova button
         bova_btn = ttk.Button(medicines_row1, text="💊 Bova",
             command=lambda: self.add_medicine("bova_taken"),
-            style='Primary.TButton')
+            style='Accent.TButton')
         bova_btn.pack(side=LEFT, fill=BOTH, expand=True, padx=2)
         
         # Drops button
         drops_btn = ttk.Button(medicines_row1, text="💧 Drops",
             command=lambda: self.add_medicine("drops_taken"),
-            style='Primary.TButton')
+            style='Accent.TButton')
         drops_btn.pack(side=LEFT, fill=BOTH, expand=True, padx=2)
         
         # Nausea Meds button takes full width on second row
         nausea_btn = ttk.Button(scrollable_frame, text="🤢 Nausea Meds",
             command=lambda: self.add_medicine("nausea_taken"),
-            style='Primary.TButton')
+            style='Accent.TButton')
         nausea_btn.pack(fill=X, padx=4, pady=(0, 8))
         
         # Checkout button - footer, always visible and large
