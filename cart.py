@@ -92,7 +92,7 @@ class CartFrame(ttk.Frame):
                 # Calculated calories label (only for food items)
                 calories = calc(quantity, self.master)
                 if calories > 0:
-                    cal_label = ttk.Label(right_frame, text=f"{calories} kcal", style='CartCal.TLabel')
+                    cal_label = ttk.Label(right_frame, text=f"{calories} cal", style='CartCal.TLabel')
                     cal_label.pack(side=RIGHT, padx=(8,0))
                 else:
                     cal_label = None
@@ -210,7 +210,7 @@ class CartFrame(ttk.Frame):
                 calories = 0
 
             if cal_label and calories > 0:
-                cal_label.config(text=f"{calories} kcal")
+                cal_label.config(text=f"{calories} cal")
 
         # If quantity dropped to zero, remove the item row and cart entry
         if float(new_qty) == 0:
