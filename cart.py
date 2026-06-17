@@ -9,21 +9,17 @@ class CartFrame(ttk.Frame):
         self.create_widgets()
 
     def create_widgets(self):
-        # Main container
+        # Main container - minimal padding for small screen
         main_container = ttk.Frame(self)
-        main_container.pack(fill=BOTH, expand=True, padx=40, pady=40)
+        main_container.pack(fill=BOTH, expand=True, padx=8, pady=8)
         
         # Header
-        header = ttk.Label(main_container, text="🛒 Order Summary", style='Header.TLabel')
-        header.pack(pady=(0, 30))
+        header = ttk.Label(main_container, text="🛒 ORDER SUMMARY", style='Header.TLabel')
+        header.pack(pady=(0, 8))
         
-        # Separator
-        sep1 = ttk.Separator(main_container, orient=HORIZONTAL)
-        sep1.pack(fill=X, pady=(0, 20))
-        
-        # Cart items
+        # Cart items with scrolling
         items_frame = ttk.Frame(main_container, style='Card.TFrame')
-        items_frame.pack(fill=BOTH, expand=True, pady=(0, 20))
+        items_frame.pack(fill=BOTH, expand=True, pady=(0, 8))
         # expose for updates when quantities change
         self.items_frame = items_frame
 
@@ -34,8 +30,21 @@ class CartFrame(ttk.Frame):
             empty_label = ttk.Label(items_frame, text="Your cart is empty", style='Card.TLabel')
             empty_label.pack(pady=20, padx=20)
         else:
-            item_labels_frame = ttk.Frame(items_frame)
-            item_labels_frame.pack(fill=BOTH, expand=True, padx=20, pady=20)
+            # Scrollable items area
+            canvas = Canvas(items_frame, bg="#1a2332", highlightthickness=0)
+            scrollbar = ttk.Scrollbar(items_frame, orient="vertical", command=canvas.yview)
+            
+            item_labels_frame = ttk.Frame(canvas, style='Card.TFrame')
+            item_labels_frame.bind(
+                "<Configure>",
+                lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+            )
+            
+            canvas.create_window((0, 0), window=item_labels_frame, anchor="nw")
+            canvas.configure(yscrollcommand=scrollbar.set)
+            
+            canvas.pack(side=LEFT, fill=BOTH, expand=True)
+            scrollbar.pack(side=RIGHT, fill=Y)
 
             # Human readable name and calorie calculation map
             readable_map = {
@@ -43,7 +52,10 @@ class CartFrame(ttk.Frame):
                 "dry_quantity": ("Dry Food", lambda q, m: int(q * getattr(m, 'dry_cal_per_cup', 0))),
                 "minnow_quantity": ("Minnow", lambda q, m: int(q * getattr(m, 'minnow_cal_per_unit', 0))),
                 "egg_quantity": ("Egg", lambda q, m: int(q * getattr(m, 'egg_cal_per_unit', 0))),
-                "giblet_quantity": ("Giblet", lambda q, m: int(q * getattr(m, 'giblet_cal_per_unit', 0)))
+                "giblet_quantity": ("Giblet", lambda q, m: int(q * getattr(m, 'giblet_cal_per_unit', 0))),
+                "bova_taken": ("Bova", lambda q, m: 0),
+                "drops_taken": ("Drops", lambda q, m: 0),
+                "nausea_taken": ("Nausea Meds", lambda q, m: 0)
             }
 
             icon_map = {}
@@ -55,7 +67,7 @@ class CartFrame(ttk.Frame):
 
             for item, quantity in self.cart.items():
                 item_row = ttk.Frame(item_labels_frame)
-                item_row.pack(fill=X, pady=8)
+                item_row.pack(fill=X, pady=6, padx=8)
 
                 name, calc = readable_map.get(item, (item, lambda q, m: 0))
                 icon = icon_map.get(item, "")
@@ -65,14 +77,17 @@ class CartFrame(ttk.Frame):
                 left_label = ttk.Label(item_row, text=left_text, style='Card.TLabel')
                 left_label.pack(side=LEFT)
 
-                # Right side: calories and quantity controls
+                # Right side: calories (if any) and quantity controls
                 right_frame = ttk.Frame(item_row)
                 right_frame.pack(side=RIGHT)
 
-                # Calculated calories label
+                # Calculated calories label (only for food items)
                 calories = calc(quantity, self.master)
-                cal_label = ttk.Label(right_frame, text=f"{calories} kcal", style='Subheader.TLabel')
-                cal_label.pack(side=RIGHT, padx=(8,0))
+                if calories > 0:
+                    cal_label = ttk.Label(right_frame, text=f"{calories} kcal", style='Subheader.TLabel')
+                    cal_label.pack(side=RIGHT, padx=(8,0))
+                else:
+                    cal_label = None
 
                 # Quantity controls: - [qty] +
                 qty_frame = ttk.Frame(right_frame)
@@ -111,26 +126,27 @@ class CartFrame(ttk.Frame):
                     'qty_label': qty_label,
                     'cal_label': cal_label,
                     'incr': incr,
-                    'row': item_row
+                    'row': item_row,
+                    'has_calories': calories > 0
                 }
         
-        # Separator
-        sep2 = ttk.Separator(main_container, orient=HORIZONTAL)
-        sep2.pack(fill=X, pady=(0, 20))
+        # Buttons section - stacked vertically, large for touchscreen
+        button_frame = ttk.Frame(main_container)
+        button_frame.pack(fill=X, pady=(0, 0))
         
         # Confirm button
-        self.confirm_button = ttk.Button(main_container, text="✓ Confirm Order", 
+        self.confirm_button = ttk.Button(button_frame, text="✓ CONFIRM", 
             command=self.confirm_cart, style='Accent.TButton')
-        self.confirm_button.pack(fill=X, pady=10)
+        self.confirm_button.pack(fill=X, pady=(0, 4))
         
         # Back button
-        self.back_button = ttk.Button(main_container, text="← Back", 
+        self.back_button = ttk.Button(button_frame, text="← BACK", 
             command=self.go_back, style='Primary.TButton')
         self.back_button.pack(fill=X)
         
         # Status label
         self.cart_label = ttk.Label(main_container, text="", style='Subheader.TLabel')
-        self.cart_label.pack(pady=20)
+        self.cart_label.pack(pady=4)
     
     def go_back(self):
         """Return to home frame without saving"""
@@ -185,7 +201,8 @@ class CartFrame(ttk.Frame):
             else:
                 calories = 0
 
-            cal_label.config(text=f"{calories} kcal")
+            if cal_label and calories > 0:
+                cal_label.config(text=f"{calories} kcal")
 
         # If quantity dropped to zero, remove the item row and cart entry
         if float(new_qty) == 0:
@@ -240,6 +257,9 @@ class CartFrame(ttk.Frame):
                     self.master.calories_today["egg_cal"] += int(quantity * self.master.egg_cal_per_unit)
                 elif item == "giblet_quantity":
                     self.master.calories_today["giblet_cal"] += int(quantity * self.master.giblet_cal_per_unit)
+                # Medicines don't add calories, just update the quantity directly
+                elif item in ["bova_taken", "drops_taken", "nausea_taken"]:
+                    pass
         self.cart_label.config(text="✓ Saving order...")
         self.cart_label.update()
         self.master.save_calories_today()

@@ -62,18 +62,18 @@ class KittyCalApp(Tk):
         style.configure('Card.TFrame', background=bg_light, relief='solid', borderwidth=1)
         
         # Configure labels
-        style.configure('TLabel', background=bg_dark, foreground=text_primary, font=('Helvetica', 11))
-        style.configure('Header.TLabel', background=bg_dark, foreground=text_primary, font=('Helvetica', 28, 'bold'))
-        style.configure('Subheader.TLabel', background=bg_dark, foreground=text_secondary, font=('Helvetica', 14))
-        style.configure('Card.TLabel', background=bg_light, foreground=text_primary, font=('Helvetica', 11))
+        style.configure('TLabel', background=bg_dark, foreground=text_primary, font=('Helvetica', 13))
+        style.configure('Header.TLabel', background=bg_dark, foreground=text_primary, font=('Helvetica', 32, 'bold'))
+        style.configure('Subheader.TLabel', background=bg_dark, foreground=text_secondary, font=('Helvetica', 16))
+        style.configure('Card.TLabel', background=bg_light, foreground=text_primary, font=('Helvetica', 13))
         
         # Configure buttons
-        style.configure('Primary.TButton', font=('Helvetica', 13, 'bold'), padding=15)
+        style.configure('Primary.TButton', font=('Helvetica', 14, 'bold'), padding=20)
         style.map('Primary.TButton',
                   background=[('pressed', accent_secondary), ('active', accent_primary)],
                   foreground=[('pressed', bg_dark), ('active', bg_dark)])
         
-        style.configure('Accent.TButton', font=('Helvetica', 13, 'bold'), padding=15)
+        style.configure('Accent.TButton', font=('Helvetica', 14, 'bold'), padding=20)
         style.map('Accent.TButton',
                   background=[('pressed', '#ff4d85'), ('active', accent_primary)],
                   foreground=[('pressed', text_primary), ('active', text_primary)])
@@ -142,7 +142,10 @@ class KittyCalApp(Tk):
             "dry_quantity": "🌾",
             "minnow_quantity": "🐟",
             "egg_quantity": "🥚",
-            "giblet_quantity": "🦴"
+            "giblet_quantity": "🦴",
+            "bova_taken": "💊",
+            "drops_taken": "💧",
+            "nausea_taken": "🤢"
         }
 
     def get_total_calories(self):
