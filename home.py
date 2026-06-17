@@ -16,6 +16,16 @@ class HomeFrame(ttk.Frame):
         # Header section
         header_frame = ttk.Frame(main_container)
         header_frame.pack(fill=X, pady=(0, 30))
+
+        # Cart display section
+        cart_frame = ttk.Frame(main_container, style='Card.TFrame')
+        cart_frame.pack(fill=X, pady=(0, 20))
+        
+        cart_label = ttk.Label(cart_frame, text="Cart", style='Subheader.TLabel')
+        cart_label.pack(side=LEFT, padx=10, pady=8)
+        
+        self.cart_display = ttk.Label(cart_frame, text="(empty)", style='Card.TLabel')
+        self.cart_display.pack(side=LEFT, padx=10, pady=8, fill=X, expand=True)
         
         self.label_header = ttk.Label(header_frame, text="Junie Birum", style='Header.TLabel')
         self.label_header.pack(side=LEFT, padx=(0, 20))
@@ -70,6 +80,19 @@ class HomeFrame(ttk.Frame):
         self.checkoutButton = ttk.Button(footer_frame, text="🛒 Checkout",
             command=self.master.checkout_cart, style='Accent.TButton')
         self.checkoutButton.pack(fill=X)
+    
+    def update_cart_display(self):
+        """Update the cart display with current items"""
+        if not self.master.cart:
+            self.cart_display.config(text="(empty)")
+        else:
+            icon_map = self.master.get_cart_icon_map()
+            cart_items = []
+            for item, quantity in self.master.cart.items():
+                icon = icon_map.get(item, "")
+                cart_items.append(f"{icon} {quantity}x")
+            display_text = "  ".join(cart_items)
+            self.cart_display.config(text=display_text)
     
     def add_extra_item(self, item):
         """Handle extra item additions"""

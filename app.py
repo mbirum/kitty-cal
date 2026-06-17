@@ -33,7 +33,7 @@ class KittyCalApp(Tk):
     def __init__(self):
         super().__init__()
         self.wm_title("KittyCal")
-        self.attributes("-fullscreen", True)
+        self.geometry("1000x800")
         self.configure(bg="#0f1419")
         
         # Configure custom ttk styles
@@ -131,6 +131,19 @@ class KittyCalApp(Tk):
             self.cart[item] += quantity
         else:
             self.cart[item] = quantity
+        # Update home frame cart display
+        if hasattr(self, 'home_frame') and self.home_frame.winfo_exists():
+            self.home_frame.update_cart_display()
+    
+    def get_cart_icon_map(self):
+        """Return mapping of cart item names to icons"""
+        return {
+            "wet_quantity": "🍖",
+            "dry_quantity": "🌾",
+            "minnow_quantity": "🐟",
+            "egg_quantity": "🥚",
+            "giblet_quantity": "🦴"
+        }
 
     def get_total_calories(self):
         print("Calculating total calories...")
