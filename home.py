@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from datetime import date
 
 class HomeFrame(ttk.Frame):    
 
@@ -27,7 +28,7 @@ class HomeFrame(ttk.Frame):
         
         # Calories display inline with header
         self.total_calories_label = ttk.Label(header_frame, 
-            text=f"💊 {self.master.calories_today['bova_taken']}/2     💧 {self.master.calories_today['drops_taken']}/4     🤢 {self.master.calories_today['nausea_taken']}/1    {self.master.get_total_calories()}/250 cal   ", 
+            text=f"{date.today()}     💊 {self.master.calories_today['bova_taken']}/2     💧 {self.master.calories_today['drops_taken']}/4     🤢 {self.master.calories_today['nausea_taken']}/1    {self.master.get_total_calories()}/250 cal   ", 
             style='Subheader.TLabel')
         self.total_calories_label.pack(side=RIGHT)
 
@@ -102,7 +103,7 @@ class HomeFrame(ttk.Frame):
         # Checkout button
         self.checkoutButton = ttk.Button(button_frame, text="🛒 CHECKOUT",
             command=self.master.checkout_cart, style='NarrowAccent.TButton')
-        self.checkoutButton.pack(fill=X)
+        self.checkoutButton.pack(fill=X, pady=(20,0))
 
         # Exit button
         self.confirm_button = ttk.Button(button_frame, text="EXIT", 
