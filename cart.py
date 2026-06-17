@@ -19,7 +19,7 @@ class CartFrame(ttk.Frame):
         
         # Cart items with scrolling
         items_frame = ttk.Frame(main_container, style='Card.TFrame')
-        items_frame.pack(fill=BOTH, expand=True, pady=(0, 8))
+        items_frame.pack(fill=X, expand=True, pady=(0, 8))
         # expose for updates when quantities change
         self.items_frame = items_frame
 
