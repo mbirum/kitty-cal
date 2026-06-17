@@ -31,4 +31,5 @@ class CartFrame(Frame):
                 elif item == "giblet_quantity":
                     self.master.calories_today["giblet_cal"] += int(quantity * self.master.giblet_cal_per_unit)
         self.cart_label.config(text="Saving...")
+        self.cart_label.update()
         self.master.save_calories_today()
