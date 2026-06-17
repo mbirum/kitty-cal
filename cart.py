@@ -11,6 +11,10 @@ class CartFrame(Frame):
         self.cart_label = Label(self, text="Cart", font="Verdana 20 bold")
         self.cart_label.pack(pady=10)
 
+        for item, quantity in self.cart.items():
+            item_label = Label(self, text=f"{item}: {quantity}", font="Verdana 16")
+            item_label.pack(pady=5)
+
         self.confirm_button = Button(self, text="Confirm", command=self.confirm_cart)
         self.confirm_button.pack(pady=10)
 
