@@ -78,7 +78,7 @@ class KittyCalApp(Tk):
             for item, value in self.calories_today.items():
                 f.write(f"{item}={int(value)}\n")
         subprocess.run(["./gitpush.sh"], check=True)
-        self.home_frame.update_total_calories_label()
+        self.restore_home_frame()
 
 
     def add_to_cart(self, item, quantity):
@@ -103,6 +103,11 @@ class KittyCalApp(Tk):
     # we can exit when we press the escape key
     def end_fullscreen(self, event):
         self.attributes("-fullscreen", False)
+
+    def restore_home_frame(self):
+        self.cart_frame.destroy()
+        self.home_frame = HomeFrame(self)
+        self.home_frame.pack(fill=BOTH, expand=True)
 
 
 if __name__ == "__main__":
