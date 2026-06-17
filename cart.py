@@ -67,7 +67,7 @@ class CartFrame(ttk.Frame):
 
             for item, quantity in self.cart.items():
                 item_row = ttk.Frame(item_labels_frame)
-                item_row.pack(fill=X, pady=6, padx=8)
+                item_row.pack(fill=X, pady=6, padx=4)
 
                 name, calc = readable_map.get(item, (item, lambda q, m: 0))
                 icon = icon_map.get(item, "")
@@ -75,7 +75,8 @@ class CartFrame(ttk.Frame):
                 # Left: icon + readable name
                 left_text = f"{icon} {name}"
                 left_label = ttk.Label(item_row, text=left_text, style='Card.TLabel')
-                left_label.pack(side=LEFT)
+                # make the name expand so the row uses the full width
+                left_label.pack(side=LEFT, fill=X, expand=True)
 
                 # Right side: calories (if any) and quantity controls
                 right_frame = ttk.Frame(item_row)
@@ -101,10 +102,10 @@ class CartFrame(ttk.Frame):
                 else:
                     incr = 1
 
-                # Decrement button
-                dec_btn = ttk.Button(qty_frame, text='−', width=3,
+                # Decrement button (smaller)
+                dec_btn = ttk.Button(qty_frame, text='−', width=2,
                     command=lambda i=item, d=-incr: self.adjust_quantity(i, d))
-                dec_btn.pack(side=LEFT)
+                dec_btn.pack(side=LEFT, padx=(0,2))
 
                 # Quantity label
                 def fmt_qty(q):
@@ -113,13 +114,13 @@ class CartFrame(ttk.Frame):
                     else:
                         return f"{int(q)}x"
 
-                qty_label = ttk.Label(qty_frame, text=fmt_qty(quantity), style='CartCal.TLabel', width=6, anchor='center')
-                qty_label.pack(side=LEFT, padx=4)
+                qty_label = ttk.Label(qty_frame, text=fmt_qty(quantity), style='CartCal.TLabel', width=4, anchor='center')
+                qty_label.pack(side=LEFT, padx=2)
 
-                # Increment button
-                inc_btn = ttk.Button(qty_frame, text='+', width=3,
+                # Increment button (smaller)
+                inc_btn = ttk.Button(qty_frame, text='+', width=2,
                     command=lambda i=item, d=incr: self.adjust_quantity(i, d))
-                inc_btn.pack(side=LEFT)
+                inc_btn.pack(side=LEFT, padx=(2,0))
 
                 # Save widget refs
                 self.item_widgets[item] = {

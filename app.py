@@ -33,7 +33,8 @@ class KittyCalApp(Tk):
     def __init__(self):
         super().__init__()
         self.wm_title("KittyCal")
-        self.geometry("1000x800")
+        # self.geometry("1000x800")
+        self.attributes("-fullscreen", True)
         self.configure(bg="#0f1419")
         
         # Configure custom ttk styles
