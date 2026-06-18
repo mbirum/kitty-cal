@@ -1,6 +1,6 @@
 wet_cal=30
 wet_quantity=50
-dry_cal=240
+dry_cal=300
 dry_quantity=2
 minnow_cal=6
 minnow_quantity=3
@@ -10,4 +10,4 @@ giblet_cal=0
 giblet_quantity=0
 bova_taken=2
 drops_taken=3
-nausea_taken=0
+nausea_taken=1
