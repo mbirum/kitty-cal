@@ -9,5 +9,5 @@ egg_quantity=3
 giblet_cal=0
 giblet_quantity=0
 bova_taken=0
-drops_taken=2
+drops_taken=3
 nausea_taken=0
