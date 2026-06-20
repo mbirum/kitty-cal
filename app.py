@@ -77,12 +77,12 @@ class KittyCalApp(Tk):
         style.configure('Card.TLabel', background=bg_light, foreground=text_primary, font=('Helvetica', 13))
         
         # Configure buttons
-        style.configure('Primary.TButton', font=('Helvetica', 14, 'bold'), padding=20)
+        style.configure('Primary.TButton', font=('Helvetica', 12, 'bold'), padding=20)
         style.map('Primary.TButton',
                   background=[('pressed', accent_secondary), ('active', accent_primary)],
                   foreground=[('pressed', bg_dark), ('active', bg_dark)])
         
-        style.configure('Accent.TButton', font=('Helvetica', 14, 'bold'), padding=20)
+        style.configure('Accent.TButton', font=('Helvetica', 12, 'bold'), padding=20)
         style.map('Accent.TButton',
                   background=[('pressed', '#ff4d85'), ('active', accent_primary)],
                   foreground=[('pressed', text_primary), ('active', text_primary)])
