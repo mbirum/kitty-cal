@@ -1,0 +1,17 @@
+wet_cal=33
+wet_quantity=55
+dry_cal=0
+dry_quantity=0
+minnow_cal=0
+minnow_quantity=0
+egg_cal=0
+egg_quantity=0
+giblet_cal=0
+giblet_quantity=0
+churu_cal=0
+churu_quantity=0
+greenie_cal=0
+greenie_quantity=0
+bova_taken=0
+drops_taken=0
+nausea_taken=0
