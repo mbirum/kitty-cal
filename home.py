@@ -46,8 +46,8 @@ class HomeFrame(ttk.Frame):
         items_frame = ttk.Frame(main_container)
         items_frame.pack(fill=X, padx=4, pady=(0, 8))
 
-        # Configure 4 equal-width columns so buttons share space
-        for i in range(4):
+        # Configure 6 equal-width columns so buttons share space (2 rows max)
+        for i in range(5):
             items_frame.columnconfigure(i, weight=1)
 
         # Row 0
@@ -71,26 +71,40 @@ class HomeFrame(ttk.Frame):
             style='Accent.TButton')
         egg_btn.grid(row=0, column=3, sticky='nsew', padx=4, pady=4)
 
+        # New item: Churu (tube) - default 0.5, increments by 0.5
+        churu_btn = ttk.Button(items_frame, text="🧴 Churu",
+            command=lambda: self.add_extra_item("churu_quantity"),
+            style='Accent.TButton')
+        churu_btn.grid(row=0, column=4, sticky='nsew', padx=4, pady=4)
+
+        # New item: Greenie - default 1, increments by 1
+        greenie_btn = ttk.Button(items_frame, text="🟢 Greenie",
+            command=lambda: self.add_extra_item("greenie_quantity"),
+            style='Accent.TButton')
+        greenie_btn.grid(row=1, column=0, sticky='nsew', padx=4, pady=4)
+
         # Row 1
         giblet_btn = ttk.Button(items_frame, text="🦴 Giblet",
             command=lambda: self.add_extra_item("giblet_quantity"),
             style='Accent.TButton')
-        giblet_btn.grid(row=1, column=0, sticky='nsew', padx=4, pady=4)
+        giblet_btn.grid(row=1, column=1, sticky='nsew', padx=4, pady=4)
 
         bova_btn = ttk.Button(items_frame, text="💊 Bova",
             command=lambda: self.add_medicine("bova_taken"),
             style='Accent.TButton')
-        bova_btn.grid(row=1, column=1, sticky='nsew', padx=4, pady=4)
+        bova_btn.grid(row=1, column=2, sticky='nsew', padx=4, pady=4)
 
         drops_btn = ttk.Button(items_frame, text="💧 Drops",
             command=lambda: self.add_medicine("drops_taken"),
             style='Accent.TButton')
-        drops_btn.grid(row=1, column=2, sticky='nsew', padx=4, pady=4)
+        drops_btn.grid(row=1, column=3, sticky='nsew', padx=4, pady=4)
 
         nausea_btn = ttk.Button(items_frame, text="🤢 Nausea Meds",
             command=lambda: self.add_medicine("nausea_taken"),
             style='Accent.TButton')
-        nausea_btn.grid(row=1, column=3, sticky='nsew', padx=4, pady=4)
+        nausea_btn.grid(row=1, column=4, sticky='nsew', padx=4, pady=4)
+
+        # columns 4 and 5 on row 1 are intentionally left empty for spacing
         
         # Footer with compact action buttons: small Exit to left of Checkout
         footer_frame = ttk.Frame(main_container)
@@ -137,6 +151,10 @@ class HomeFrame(ttk.Frame):
             self.master.add_to_cart(item, self.master.egg_default_quantity)
         elif item == "giblet_quantity":
             self.master.add_to_cart(item, self.master.giblet_default_quantity)
+        elif item == "churu_quantity":
+            self.master.add_to_cart(item, self.master.churu_default_quantity)
+        elif item == "greenie_quantity":
+            self.master.add_to_cart(item, self.master.greenie_default_quantity)
     
     def add_medicine(self, item):
         """Handle medicine additions"""

@@ -24,6 +24,13 @@ class KittyCalApp(Tk):
     giblet_cal_per_unit = 2
     giblet_default_quantity = 1
 
+    # New items
+    churu_cal_per_tube = 6
+    churu_default_quantity = 0.5
+
+    greenie_cal_per_unit = 1.5
+    greenie_default_quantity = 1
+
     bova_needed_per_day = 2
     drop_needed_per_day = 4
     nausea_needed_per_day = 1
@@ -107,6 +114,10 @@ class KittyCalApp(Tk):
             "egg_quantity": 0,
             "giblet_cal": 0,
             "giblet_quantity": 0,
+            "churu_cal": 0,
+            "churu_quantity": 0,
+            "greenie_cal": 0,
+            "greenie_quantity": 0,
             "bova_taken": 0,
             "drops_taken": 0,
             "nausea_taken": 0
@@ -156,6 +167,8 @@ class KittyCalApp(Tk):
             "minnow_quantity": "🐟",
             "egg_quantity": "🥚",
             "giblet_quantity": "🦴",
+            "churu_quantity": "🧴",
+            "greenie_quantity": "🟢",
             "bova_taken": "💊",
             "drops_taken": "💧",
             "nausea_taken": "🤢"
@@ -165,7 +178,9 @@ class KittyCalApp(Tk):
         print("Calculating total calories...")
         total_calories = (self.calories_today["wet_cal"] + self.calories_today["dry_cal"] +
                         self.calories_today["minnow_cal"] + self.calories_today["egg_cal"] +
-                        self.calories_today["giblet_cal"])
+                        self.calories_today["giblet_cal"] +
+                        self.calories_today["churu_cal"] +
+                        self.calories_today["greenie_cal"])
         return total_calories
         
     def checkout_cart(self):

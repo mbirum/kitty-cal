@@ -60,6 +60,8 @@ class CartFrame(ttk.Frame):
                 "minnow_quantity": ("Minnow", lambda q, m: int(q * getattr(m, 'minnow_cal_per_unit', 0))),
                 "egg_quantity": ("Egg", lambda q, m: int(q * getattr(m, 'egg_cal_per_unit', 0))),
                 "giblet_quantity": ("Giblet", lambda q, m: int(q * getattr(m, 'giblet_cal_per_unit', 0))),
+                "churu_quantity": ("Churu", lambda q, m: int(q * getattr(m, 'churu_cal_per_tube', 0))),
+                "greenie_quantity": ("Greenie", lambda q, m: int(q * getattr(m, 'greenie_cal_per_unit', 0))),
                 "bova_taken": ("Bova", lambda q, m: 0),
                 "drops_taken": ("Drops", lambda q, m: 0),
                 "nausea_taken": ("Nausea Meds", lambda q, m: 0)
@@ -105,6 +107,8 @@ class CartFrame(ttk.Frame):
                 if item == 'wet_quantity':
                     incr = 5
                 elif item == 'dry_quantity':
+                    incr = 0.5
+                elif item == 'churu_quantity':
                     incr = 0.5
                 else:
                     incr = 1
@@ -206,6 +210,10 @@ class CartFrame(ttk.Frame):
                 calories = int(new_qty * getattr(self.master, 'egg_cal_per_unit', 0))
             elif item == "giblet_quantity":
                 calories = int(new_qty * getattr(self.master, 'giblet_cal_per_unit', 0))
+            elif item == "churu_quantity":
+                calories = int(new_qty * getattr(self.master, 'churu_cal_per_tube', 0))
+            elif item == "greenie_quantity":
+                calories = int(new_qty * getattr(self.master, 'greenie_cal_per_unit', 0))
             else:
                 calories = 0
 
@@ -265,6 +273,11 @@ class CartFrame(ttk.Frame):
                     self.master.calories_today["egg_cal"] += int(quantity * self.master.egg_cal_per_unit)
                 elif item == "giblet_quantity":
                     self.master.calories_today["giblet_cal"] += int(quantity * self.master.giblet_cal_per_unit)
+                elif item == "churu_quantity":
+                    self.master.calories_today["churu_cal"] += int(quantity * self.master.churu_cal_per_tube)
+                elif item == "greenie_quantity":
+                    # greenie_cal may be fractional; store as int total calories
+                    self.master.calories_today["greenie_cal"] += int(quantity * self.master.greenie_cal_per_unit)
                 # Medicines don't add calories, just update the quantity directly
                 elif item in ["bova_taken", "drops_taken", "nausea_taken"]:
                     pass
