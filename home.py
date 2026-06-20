@@ -51,12 +51,12 @@ class HomeFrame(ttk.Frame):
             items_frame.columnconfigure(i, weight=1)
 
         # Row 0
-        self.wetFoodButton = ttk.Button(items_frame, text="🍖 Wet Food",
+        self.wetFoodButton = ttk.Button(items_frame, text="🍣 Wet Food",
             command=lambda: self.master.add_to_cart("wet_quantity", self.master.wet_default_quantity),
             style='Accent.TButton')
         self.wetFoodButton.grid(row=0, column=0, sticky='nsew', padx=4, pady=4)
 
-        self.dryFoodButton = ttk.Button(items_frame, text="🌾 Dry Food",
+        self.dryFoodButton = ttk.Button(items_frame, text="🧆 Dry Food",
             command=lambda: self.master.add_to_cart("dry_quantity", self.master.dry_default_quantity),
             style='Accent.TButton')
         self.dryFoodButton.grid(row=0, column=1, sticky='nsew', padx=4, pady=4)
@@ -120,7 +120,7 @@ class HomeFrame(ttk.Frame):
         self.checkoutButton.pack(fill=X, pady=(50,0))
 
         # Exit button
-        self.confirm_button = ttk.Button(button_frame, text="EXIT", 
+        self.confirm_button = ttk.Button(button_frame, text="🚪 EXIT", 
             command=self.master.quit, style='NarrowAccent.TButton')
         self.confirm_button.pack(fill=X, pady=(4,0))
 

@@ -162,8 +162,8 @@ class KittyCalApp(Tk):
     def get_cart_icon_map(self):
         """Return mapping of cart item names to icons"""
         return {
-            "wet_quantity": "🍖",
-            "dry_quantity": "🌾",
+            "wet_quantity": "🍣",
+            "dry_quantity": "🧆",
             "minnow_quantity": "🐟",
             "egg_quantity": "🥚",
             "giblet_quantity": "🦴",
