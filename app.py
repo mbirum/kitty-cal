@@ -80,7 +80,7 @@ class KittyCalApp(Tk):
                   background=[('pressed', '#ff4d85'), ('active', accent_primary)],
                   foreground=[('pressed', text_primary), ('active', text_primary)])
 
-        style.configure('Checkout.TButton', background='#ff4d85', font=('Helvetica', 14, 'bold'), padding=20)
+        style.configure('Checkout.TButton', background='#ff4d85', foreground=text_primary, font=('Helvetica', 14, 'bold'), padding=20)
         style.map('Checkout.TButton',
                   background=[('pressed', '#bg_light'), ('active', bg_light)],
                   foreground=[('pressed', text_primary), ('active', text_primary)])
