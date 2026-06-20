@@ -102,7 +102,7 @@ class HomeFrame(ttk.Frame):
 
         # Checkout button
         self.checkoutButton = ttk.Button(button_frame, text="🛒 CHECKOUT",
-            command=self.master.checkout_cart, style='NarrowAccent.TButton')
+            command=self.master.checkout_cart, style='Checkout.TButton')
         self.checkoutButton.pack(fill=X, pady=(50,0))
 
         # Exit button
