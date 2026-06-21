@@ -1,5 +1,6 @@
 from tkinter import *
 from tkinter import ttk
+from chart import ChartFrame
 from datetime import date
 
 class HomeFrame(ttk.Frame):    
@@ -32,8 +33,21 @@ class HomeFrame(ttk.Frame):
             style='Subheader.TLabel')
         self.total_calories_label.pack(side=RIGHT)
 
-        # Cart display section - compact
-        cart_frame = ttk.Frame(main_container, style='Card.TFrame')
+        # (Tabs removed) — Chart button moved to footer below
+
+        # Content area where either the home content or the chart will appear
+        content_area = ttk.Frame(main_container)
+        content_area.pack(fill=BOTH, expand=True)
+
+        # Home content is a frame we can hide/show when switching tabs
+        self.home_content_frame = ttk.Frame(content_area)
+        self.home_content_frame.pack(fill=BOTH, expand=True)
+
+        # Chart frame (initially not packed) — pass callback to return to home
+        self.chart_frame = ChartFrame(content_area, show_home_callback=lambda: self.show_tab('home'))
+
+        # Cart display section - compact (moved into home content)
+        cart_frame = ttk.Frame(self.home_content_frame, style='Card.TFrame')
         cart_frame.pack(fill=X, pady=(10, 25))
         
         cart_label = ttk.Label(cart_frame, text="Cart:", style='Subheader.TLabel')
@@ -43,7 +57,7 @@ class HomeFrame(ttk.Frame):
         self.cart_display.pack(side=LEFT, padx=8, pady=6, fill=X, expand=True)
         
         # Item buttons arranged in a compact 2-row grid (no scrolling)
-        items_frame = ttk.Frame(main_container)
+        items_frame = ttk.Frame(self.home_content_frame)
         items_frame.pack(fill=X, padx=4, pady=(0, 8))
 
         # Configure 6 equal-width columns so buttons share space (2 rows max)
@@ -107,7 +121,7 @@ class HomeFrame(ttk.Frame):
         # columns 4 and 5 on row 1 are intentionally left empty for spacing
         
         # Footer with compact action buttons: small Exit to left of Checkout
-        footer_frame = ttk.Frame(main_container)
+        footer_frame = ttk.Frame(self.home_content_frame)
         footer_frame.pack(fill=X, pady=(0, 0))
 
         # Button container aligned to the right so actions don't span full width
@@ -117,7 +131,12 @@ class HomeFrame(ttk.Frame):
         # Checkout button
         self.checkoutButton = ttk.Button(button_frame, text="🛒 CHECKOUT",
             command=self.master.checkout_cart, style='NarrowAccent.TButton')
-        self.checkoutButton.pack(fill=X, pady=(50,0))
+        self.checkoutButton.pack(fill=X, pady=(20,0))
+
+        # Chart button (same style as Checkout) placed between Checkout and Exit
+        self.chartButton = ttk.Button(button_frame, text="📈 CHART",
+            command=lambda: self.show_tab('chart'), style='NarrowAccent.TButton')
+        self.chartButton.pack(fill=X, pady=(4,0))
 
         # Exit button
         self.confirm_button = ttk.Button(button_frame, text="🚪 EXIT", 
@@ -163,3 +182,15 @@ class HomeFrame(ttk.Frame):
 
     def update_total_calories_label(self):
         self.total_calories_label.config(text=f"{self.master.get_total_calories()} Total Calories Today")
+
+    def show_tab(self, tab):
+        """Show either the home content or the chart frame based on the tab name."""
+        if tab == 'home':
+            try:
+                self.chart_frame.pack_forget()
+            except Exception:
+                pass
+            self.home_content_frame.pack(fill=BOTH, expand=True)
+        else:
+            self.home_content_frame.pack_forget()
+            self.chart_frame.pack(fill=BOTH, expand=True)
