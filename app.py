@@ -41,6 +41,9 @@ class KittyCalApp(Tk):
         super().__init__()
         self.wm_title("KittyCal")
         # self.geometry("1000x800")
+        # Set fullscreen after window creation; on some platforms (macOS)
+        # toggling fullscreen is more reliable after the window is mapped.
+        # We'll also re-assert fullscreen shortly after startup.
         self.attributes("-fullscreen", True)
         self.configure(bg="#0f1419")
         
@@ -51,6 +54,12 @@ class KittyCalApp(Tk):
         self.load_calories_today()
         self.home_frame = HomeFrame(self)
         self.home_frame.pack(fill=BOTH, expand=True)
+
+        # Re-assert fullscreen after the UI is mapped (helps on macOS)
+        try:
+            self.after(100, lambda: self.attributes("-fullscreen", True))
+        except Exception:
+            pass
     
     def configure_styles(self):
         """Configure modern ttk styles with custom colors"""
@@ -187,10 +196,6 @@ class KittyCalApp(Tk):
         self.home_frame.destroy()
         self.cart_frame = CartFrame(self.cart, self)
         self.cart_frame.pack(fill=BOTH, expand=True)
-        
-    # we can exit when we press the escape key
-    def end_fullscreen(self, event):
-        self.attributes("-fullscreen", False)
 
     def restore_home_frame(self):
         self.cart_frame.destroy()
