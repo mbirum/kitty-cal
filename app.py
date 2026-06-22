@@ -142,7 +142,10 @@ class KittyCalApp(Tk):
             with open(self.log_file_path, "r") as f:
                 for line in f:
                     item, value = line.strip().split("=")
-                    self.calories_today[item] = int(value)
+                    if item == "weight":
+                        self.calories_today[item] = float(value)
+                    else:
+                        self.calories_today[item] = int(value)
         else:
             with open(self.log_file_path, "w") as f:
                 for item, value in self.calories_today.items():

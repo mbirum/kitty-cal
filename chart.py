@@ -12,6 +12,11 @@ class ChartFrame(ttk.Frame):
     def __init__(self, master=None, show_home_callback=None):
         super().__init__(master)
         self.show_home_callback = show_home_callback
+        # default view is weight by day
+        self.current_view = 'weight'  # 'weight' or 'calories'
+        self._dates = []
+        self._calories = []
+        self._weights = []
         self.create_widgets()
 
     def create_widgets(self):
@@ -30,34 +35,30 @@ class ChartFrame(ttk.Frame):
             placeholder.pack(padx=12, pady=12)
             return
 
-        dates, totals = self._load_daily_totals()
+        # Load both calories and weight data
+        dates, calories, weights = self._load_daily_data()
+        self._dates = dates
+        self._calories = calories
+        self._weights = weights
 
-        # Create figure and apply dark theme colors matching the app
-        fig, ax = plt.subplots(figsize=(8, 3), dpi=100)
-        bg_dark = '#0f1419'
-        bg_light = '#1a2332'
-        text_primary = '#ffffff'
-        text_secondary = '#b0b9c1'
-        accent_primary = '#ff6b9d'
+        # Tabs: create a Notebook with two tabs (Weight, Calories)
+        notebook = ttk.Notebook(self)
+        notebook.pack(fill=BOTH, expand=True, padx=8, pady=8)
 
-        fig.patch.set_facecolor(bg_dark)
-        ax.set_facecolor(bg_light)
+        weight_frame = ttk.Frame(notebook)
+        calories_frame = ttk.Frame(notebook)
+        notebook.add(weight_frame, text='Weight')
+        notebook.add(calories_frame, text='Calories')
 
-        if dates:
-            ax.plot(dates, totals, marker='o', color=accent_primary, markerfacecolor=text_primary)
-            ax.set_title('Calories per Day', color=text_primary)
-            ax.set_ylabel('Calories', color=text_secondary)
-            ax.tick_params(colors=text_secondary)
-            for spine in ax.spines.values():
-                spine.set_color(text_secondary)
-            fig.autofmt_xdate()
-        else:
-            ax.text(0.5, 0.5, 'No data available', ha='center', va='center', color=text_secondary)
+        # Draw both charts into their respective tab frames (default tab is Weight)
+        self._draw_chart('weight', weight_frame)
+        self._draw_chart('calories', calories_frame)
 
-        canvas = FigureCanvasTkAgg(fig, master=self)
-        canvas.draw()
-        canvas_widget = canvas.get_tk_widget()
-        canvas_widget.pack(fill=BOTH, expand=True, padx=8, pady=8)
+        # ensure the notebook shows the Weight tab first
+        try:
+            notebook.select(0)
+        except Exception:
+            pass
 
         # Return button at bottom
         btn_frame = ttk.Frame(self)
@@ -74,15 +75,20 @@ class ChartFrame(ttk.Frame):
                 pass
 
     def _load_daily_totals(self):
-        """Read `log/*.txt` files and compute total calories per file.
+        # Deprecated; kept for backward compatibility. Use _load_daily_data instead.
+        dates, calories, weights = self._load_daily_data()
+        return dates, calories
 
-        Returns (dates, totals) where dates is a list of datetime.date and totals
-        is a list of ints.
+    def _load_daily_data(self):
+        """Read `log/*.txt` files and compute total calories and weight per file.
+
+        Returns (dates, calories, weights) where dates is a list of datetime.date,
+        calories is a list of ints, and weights is a list of floats or None.
         """
         log_dir = os.path.join(os.path.dirname(__file__), 'log')
-        totals_by_date = []
+        rows = []
         if not os.path.isdir(log_dir):
-            return [], []
+            return [], [], []
 
         for fname in os.listdir(log_dir):
             if not fname.endswith('.txt'):
@@ -93,13 +99,14 @@ class ChartFrame(ttk.Frame):
                 continue
             path = os.path.join(log_dir, fname)
             total = 0
+            weight = None
             try:
                 with open(path, 'r') as f:
                     for line in f:
                         if '=' not in line:
                             continue
                         key, val = line.strip().split('=', 1)
-                        # Only sum the explicit _cal fields
+                        # calories fields
                         if key in ('wet_cal','dry_cal','minnow_cal','egg_cal','giblet_cal','churu_cal','greenie_cal'):
                             try:
                                 total += int(val)
@@ -108,12 +115,75 @@ class ChartFrame(ttk.Frame):
                                     total += int(float(val))
                                 except Exception:
                                     pass
+                        elif key == 'weight':
+                            try:
+                                weight = float(val)
+                            except Exception:
+                                try:
+                                    weight = float(val.replace(',', '.'))
+                                except Exception:
+                                    weight = None
             except Exception:
                 continue
-            totals_by_date.append((date_obj, total))
+            rows.append((date_obj, total, weight))
 
         # Sort by date
-        totals_by_date.sort()
-        dates = [d for d, t in totals_by_date]
-        totals = [t for d, t in totals_by_date]
-        return dates, totals
+        rows.sort()
+        dates = [d for d, c, w in rows]
+        calories = [c for d, c, w in rows]
+        weights = [w for d, c, w in rows]
+        return dates, calories, weights
+
+    def _draw_chart(self, view, target_frame):
+        # Clear previous canvas in the provided target frame
+        try:
+            for child in target_frame.winfo_children():
+                child.destroy()
+        except Exception:
+            pass
+
+        # Lazy import matplotlib here (already imported earlier in create_widgets)
+        import matplotlib
+        matplotlib.use('TkAgg')
+        import matplotlib.pyplot as plt
+        from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+        bg_dark = '#0f1419'
+        bg_light = '#1a2332'
+        text_primary = '#ffffff'
+        text_secondary = '#b0b9c1'
+        accent_primary = '#ff6b9d'
+
+        fig, ax = plt.subplots(figsize=(8, 3), dpi=100)
+        fig.patch.set_facecolor(bg_dark)
+        ax.set_facecolor(bg_light)
+
+        if view == 'weight':
+            # filter dates with weight present
+            pts = [(d, w) for d, w in zip(self._dates, self._weights) if w is not None]
+            if pts:
+                xs = [d for d, _ in pts]
+                ys = [w for _, w in pts]
+                ax.plot(xs, ys, marker='o', color=accent_primary, markerfacecolor=text_primary)
+                ax.set_title('Weight per Day', color=text_primary)
+                ax.set_ylabel('Weight', color=text_secondary)
+            else:
+                ax.text(0.5, 0.5, 'No weight data available', ha='center', va='center', color=text_secondary)
+        else:
+            if self._dates:
+                ax.plot(self._dates, self._calories, marker='o', color=accent_primary, markerfacecolor=text_primary)
+                ax.set_title('Calories per Day', color=text_primary)
+                ax.set_ylabel('Calories', color=text_secondary)
+            else:
+                ax.text(0.5, 0.5, 'No calorie data available', ha='center', va='center', color=text_secondary)
+
+        ax.tick_params(colors=text_secondary)
+        for spine in ax.spines.values():
+            spine.set_color(text_secondary)
+        fig.autofmt_xdate()
+
+        canvas = FigureCanvasTkAgg(fig, master=target_frame)
+        canvas.draw()
+        canvas_widget = canvas.get_tk_widget()
+        canvas_widget.pack(fill=BOTH, expand=True)
+        # don't store globally; each tab keeps its own canvas if needed
