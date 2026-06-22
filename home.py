@@ -3,6 +3,7 @@ from tkinter import ttk
 from chart import ChartFrame
 from weight import WeighInFrame
 from datetime import date
+import subprocess
 
 class HomeFrame(ttk.Frame):    
 
@@ -201,6 +202,7 @@ class HomeFrame(ttk.Frame):
                 pass
             self.home_content_frame.pack(fill=BOTH, expand=True)
         else:
+            subprocess.run(["./gitpull.sh"], check=True)
             self.home_content_frame.pack_forget()
             self.chart_frame.pack(fill=BOTH, expand=True)
 
