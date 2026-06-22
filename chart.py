@@ -42,21 +42,21 @@ class ChartFrame(ttk.Frame):
         self._weights = weights
 
         # Tabs: create a Notebook with two tabs (Weight, Calories)
-        notebook = ttk.Notebook(self)
-        notebook.pack(fill=BOTH, expand=True, padx=8, pady=8)
+        self.notebook = ttk.Notebook(self)
+        self.notebook.pack(fill=BOTH, expand=True, padx=8, pady=8)
 
-        weight_frame = ttk.Frame(notebook)
-        calories_frame = ttk.Frame(notebook)
-        notebook.add(weight_frame, text='Weight')
-        notebook.add(calories_frame, text='Calories')
+        self.weight_frame = ttk.Frame(self.notebook)
+        self.calories_frame = ttk.Frame(self.notebook)
+        self.notebook.add(self.weight_frame, text='Weight')
+        self.notebook.add(self.calories_frame, text='Calories')
 
         # Draw both charts into their respective tab frames (default tab is Weight)
-        self._draw_chart('weight', weight_frame)
-        self._draw_chart('calories', calories_frame)
+        self._draw_chart('weight', self.weight_frame)
+        self._draw_chart('calories', self.calories_frame)
 
         # ensure the notebook shows the Weight tab first
         try:
-            notebook.select(0)
+            self.notebook.select(0)
         except Exception:
             pass
 
@@ -187,3 +187,20 @@ class ChartFrame(ttk.Frame):
         canvas_widget = canvas.get_tk_widget()
         canvas_widget.pack(fill=BOTH, expand=True)
         # don't store globally; each tab keeps its own canvas if needed
+
+    def refresh(self):
+        """Reload data from logs and redraw both tabs."""
+        dates, calories, weights = self._load_daily_data()
+        self._dates = dates
+        self._calories = calories
+        self._weights = weights
+
+        # redraw into existing frames
+        try:
+            self._draw_chart('weight', self.weight_frame)
+        except Exception:
+            pass
+        try:
+            self._draw_chart('calories', self.calories_frame)
+        except Exception:
+            pass

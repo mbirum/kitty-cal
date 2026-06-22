@@ -202,8 +202,12 @@ class HomeFrame(ttk.Frame):
                 pass
             self.home_content_frame.pack(fill=BOTH, expand=True)
         else:
-            self.master.load_calories_today()
             self.home_content_frame.pack_forget()
+            # Refresh chart data before showing so recent changes (e.g. new weight) appear
+            try:
+                self.chart_frame.refresh()
+            except Exception:
+                pass
             self.chart_frame.pack(fill=BOTH, expand=True)
 
     def show_weighin(self):
