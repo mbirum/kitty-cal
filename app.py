@@ -1,7 +1,7 @@
 #!/usr/bin/python
 from tkinter import *
 from tkinter import ttk
-from datetime import date
+from datetime import date, timedelta
 from cart import CartFrame
 from home import HomeFrame
 import subprocess
@@ -129,7 +129,8 @@ class KittyCalApp(Tk):
             "greenie_quantity": 0,
             "bova_taken": 0,
             "drops_taken": 0,
-            "nausea_taken": 0
+            "nausea_taken": 0,
+            "weight": 0.0
         }
         return self.calories_today
 
@@ -147,6 +148,26 @@ class KittyCalApp(Tk):
                     else:
                         self.calories_today[item] = int(value)
         else:
+            # If there's no log for today, try to initialize weight from yesterday's log
+            try:
+                yesterday = date.today() - timedelta(days=1)
+                yesterday_path = f"log/{yesterday}.txt"
+                if os.path.exists(yesterday_path):
+                    with open(yesterday_path, 'r') as yf:
+                        for line in yf:
+                            if not line or '=' not in line:
+                                continue
+                            key, val = line.strip().split('=', 1)
+                            if key == 'weight':
+                                try:
+                                    self.calories_today['weight'] = float(val)
+                                except Exception:
+                                    # leave default if parsing fails
+                                    pass
+                                break
+            except Exception:
+                pass
+
             with open(self.log_file_path, "w") as f:
                 for item, value in self.calories_today.items():
                     f.write(f"{item}={value}\n")
