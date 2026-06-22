@@ -176,7 +176,18 @@ class KittyCalApp(Tk):
         print("Saving calories for today...")
         with open(self.log_file_path, "w") as f:
             for item, value in self.calories_today.items():
-                f.write(f"{item}={int(value)}\n")
+                # Preserve `weight` as a float so decimals (e.g. 5.8) are not truncated.
+                if item == 'weight':
+                    try:
+                        f.write(f"{item}={float(value)}\n")
+                    except Exception:
+                        f.write(f"{item}={value}\n")
+                else:
+                    try:
+                        f.write(f"{item}={int(value)}\n")
+                    except Exception:
+                        # fallback to raw value if casting fails
+                        f.write(f"{item}={value}\n")
         subprocess.run(["./gitpush.sh"], check=True)
         self.cart = {}
         self.restore_home_frame()
