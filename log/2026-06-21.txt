@@ -12,6 +12,6 @@ churu_cal=3
 churu_quantity=0
 greenie_cal=0
 greenie_quantity=0
-bova_taken=1
+bova_taken=2
 drops_taken=4
 nausea_taken=0
