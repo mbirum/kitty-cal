@@ -216,4 +216,9 @@ class HomeFrame(ttk.Frame):
             self.chart_frame.pack_forget()
         except Exception:
             pass
+        # Refresh weigh-in state so UI reflects latest saved weight and clears status
+        try:
+            self.weighin_frame.refresh()
+        except Exception:
+            pass
         self.weighin_frame.pack(fill=BOTH, expand=True)

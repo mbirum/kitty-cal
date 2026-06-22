@@ -52,6 +52,9 @@ class WeighInFrame(ttk.Frame):
 
         self.confirm_button = ttk.Button(btn_frame, text="✓ CONFIRM", command=self._confirm, style='Accent.TButton')
         self.confirm_button.pack(fill=X)
+        # Cancel / Back button
+        self.cancel_button = ttk.Button(btn_frame, text="← CANCEL", command=self._cancel, style='Primary.TButton')
+        self.cancel_button.pack(fill=X, pady=(4,0))
 
     def _adjust(self, delta):
         try:
@@ -90,6 +93,13 @@ class WeighInFrame(ttk.Frame):
 
         try:
             self.app.save_calories_today()
+            # Indicate saved briefly, then clear the label
+            try:
+                self.status_label.config(text="✓ Saved")
+                # clear after 800ms
+                self.after(800, lambda: self.status_label.config(text=""))
+            except Exception:
+                pass
         except Exception:
             pass
 
@@ -99,3 +109,41 @@ class WeighInFrame(ttk.Frame):
                 self.show_home_callback()
             except Exception:
                 pass
+
+    def _cancel(self):
+        """Cancel and return to home without saving changes."""
+        # Reset current_weight to app value to discard unsaved edits
+        try:
+            if self.app and hasattr(self.app, 'calories_today'):
+                self.current_weight = float(self.app.calories_today.get('weight', 0.0) or 0.0)
+                self.weight_label.config(text=f"{self.current_weight:.1f}")
+        except Exception:
+            pass
+        # Clear any status
+        try:
+            self.status_label.config(text="")
+        except Exception:
+            pass
+        if callable(self.show_home_callback):
+            try:
+                self.show_home_callback()
+            except Exception:
+                pass
+
+    def refresh(self):
+        """Reload current weight from the app and clear transient UI state."""
+        try:
+            if self.app and hasattr(self.app, 'calories_today'):
+                self.current_weight = float(self.app.calories_today.get('weight', 0.0) or 0.0)
+            else:
+                self.current_weight = 0.0
+        except Exception:
+            self.current_weight = 0.0
+        try:
+            self.weight_label.config(text=f"{self.current_weight:.1f}")
+        except Exception:
+            pass
+        try:
+            self.status_label.config(text="")
+        except Exception:
+            pass
