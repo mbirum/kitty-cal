@@ -202,7 +202,7 @@ class HomeFrame(ttk.Frame):
                 pass
             self.home_content_frame.pack(fill=BOTH, expand=True)
         else:
-            subprocess.run(["./gitpull.sh"], check=True)
+            self.master.load_calories_today()
             self.home_content_frame.pack_forget()
             self.chart_frame.pack(fill=BOTH, expand=True)
 
