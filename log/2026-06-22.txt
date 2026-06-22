@@ -15,4 +15,4 @@ greenie_quantity=0
 bova_taken=1
 drops_taken=2
 nausea_taken=0
-weight=5.8
+weight=6

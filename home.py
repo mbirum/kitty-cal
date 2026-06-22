@@ -1,6 +1,7 @@
 from tkinter import *
 from tkinter import ttk
 from chart import ChartFrame
+from weight import WeighInFrame
 from datetime import date
 
 class HomeFrame(ttk.Frame):    
@@ -45,6 +46,8 @@ class HomeFrame(ttk.Frame):
 
         # Chart frame (initially not packed) — pass callback to return to home
         self.chart_frame = ChartFrame(content_area, show_home_callback=lambda: self.show_tab('home'))
+        # Weigh-in frame (initially not packed)
+        self.weighin_frame = WeighInFrame(content_area, app=self.master, show_home_callback=lambda: self.show_tab('home'))
 
         # Cart display section - compact (moved into home content)
         cart_frame = ttk.Frame(self.home_content_frame, style='Card.TFrame')
@@ -133,15 +136,17 @@ class HomeFrame(ttk.Frame):
             command=self.master.checkout_cart, style='NarrowAccent.TButton')
         self.checkoutButton.pack(fill=X, pady=(20,0))
 
-        # Chart button (same style as Checkout) placed between Checkout and Exit
-        self.chartButton = ttk.Button(button_frame, text="📈 CHART",
-            command=lambda: self.show_tab('chart'), style='NarrowAccent.TButton')
-        self.chartButton.pack(fill=X, pady=(4,0))
+        # Chart and Weigh In side-by-side row
+        row_frame = ttk.Frame(button_frame)
+        row_frame.pack(fill=X, pady=(4,0))
 
-        # Exit button
-        self.confirm_button = ttk.Button(button_frame, text="🚪 EXIT", 
-            command=self.master.quit, style='NarrowAccent.TButton')
-        self.confirm_button.pack(fill=X, pady=(4,0))
+        self.chartButton = ttk.Button(row_frame, text="📈 CHART",
+            command=lambda: self.show_tab('chart'), style='NarrowAccent.TButton')
+        self.chartButton.pack(side=LEFT, fill=X, expand=True, padx=(0, 4))
+
+        self.weighButton = ttk.Button(row_frame, text="⚖️ WEIGH IN",
+            command=lambda: self.show_weighin(), style='NarrowAccent.TButton')
+        self.weighButton.pack(side=LEFT, fill=X, expand=True, padx=(4, 0))
 
         # self.exitButton = ttk.Button(button_frame, text="EXIT",
         #     command=self.master.quit, style='Small.TButton', width=8)
@@ -190,7 +195,19 @@ class HomeFrame(ttk.Frame):
                 self.chart_frame.pack_forget()
             except Exception:
                 pass
+            try:
+                self.weighin_frame.pack_forget()
+            except Exception:
+                pass
             self.home_content_frame.pack(fill=BOTH, expand=True)
         else:
             self.home_content_frame.pack_forget()
             self.chart_frame.pack(fill=BOTH, expand=True)
+
+    def show_weighin(self):
+        self.home_content_frame.pack_forget()
+        try:
+            self.chart_frame.pack_forget()
+        except Exception:
+            pass
+        self.weighin_frame.pack(fill=BOTH, expand=True)
