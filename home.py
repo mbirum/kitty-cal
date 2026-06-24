@@ -46,7 +46,7 @@ class HomeFrame(ttk.Frame):
         self.home_content_frame.pack(fill=BOTH, expand=True)
 
         # Chart frame (initially not packed) — pass callback to return to home
-        self.chart_frame = ChartFrame(content_area, show_home_callback=lambda: self.show_tab('home'))
+        self.chart_frame = ChartFrame(content_area, app=self.master, show_home_callback=lambda: self.show_tab('home'))
         # Weigh-in frame (initially not packed)
         self.weighin_frame = WeighInFrame(content_area, app=self.master, show_home_callback=lambda: self.show_tab('home'))
 

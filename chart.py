@@ -9,8 +9,9 @@ class ChartFrame(ttk.Frame):
     Reads `log/*.txt` files (YYYY-MM-DD.txt) and sums calorie fields to plot daily totals.
     """
 
-    def __init__(self, master=None, show_home_callback=None):
+    def __init__(self, master=None, app=None, show_home_callback=None):
         super().__init__(master)
+        self.app = app
         self.show_home_callback = show_home_callback
         # default view is weight by day
         self.current_view = 'weight'  # 'weight' or 'calories'
@@ -182,10 +183,41 @@ class ChartFrame(ttk.Frame):
             spine.set_color(text_secondary)
         fig.autofmt_xdate()
 
-        canvas = FigureCanvasTkAgg(fig, master=target_frame)
+        # Create a container so we can show a left column next to the chart
+        container = ttk.Frame(target_frame)
+        container.pack(fill=BOTH, expand=True)
+
+        # Left column: show `calories_today` contents in monospace
+        left_frame = ttk.Frame(container)
+        left_frame.pack(side=LEFT, fill=Y, padx=(6, 8), pady=6)
+
+        # Use a Text widget for monospaced, multiline display and set it read-only
+        cal_text = Text(left_frame, bg=bg_light, fg=text_primary, font=('Courier', 12), bd=0, highlightthickness=0)
+        cal_text.pack(fill=Y, expand=False)
+
+        # Fetch calories_today from the application root if available
+        cal_data = {}
+        try:
+            cal_data = getattr(self.app, 'calories_today', {}) or {}
+        except Exception:
+            cal_data = {}
+
+        if cal_data:
+            lines = []
+            # keep a stable order similar to app.get_initial_calories
+            for k, v in cal_data.items():
+                lines.append(f"{k}={v}")
+            cal_text.insert('1.0', '\n'.join(lines))
+        else:
+            cal_text.insert('1.0', 'No calories_today data available')
+
+        cal_text.config(state=DISABLED)
+
+        # Chart canvas placed to the right of the left column
+        canvas = FigureCanvasTkAgg(fig, master=container)
         canvas.draw()
         canvas_widget = canvas.get_tk_widget()
-        canvas_widget.pack(fill=BOTH, expand=True)
+        canvas_widget.pack(side=LEFT, fill=BOTH, expand=True)
         # don't store globally; each tab keeps its own canvas if needed
 
     def refresh(self):
