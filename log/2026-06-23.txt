@@ -1,5 +1,5 @@
-wet_cal=36
-wet_quantity=60
+wet_cal=66
+wet_quantity=110
 dry_cal=120
 dry_quantity=1
 minnow_cal=12
