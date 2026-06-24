@@ -44,7 +44,10 @@ class ChartFrame(ttk.Frame):
 
         # Tabs: create a Notebook with two tabs (Weight, Calories)
         self.notebook = ttk.Notebook(self)
-        self.notebook.pack(fill=BOTH, expand=True, padx=8, pady=8)
+        # Limit notebook height so the Return button remains visible on small screens.
+        # Use place with a relative height (82% of the available height) so the
+        # Return button can occupy the remaining area at the bottom.
+        self.notebook.place(relx=0.0, rely=0.0, relwidth=1.0, relheight=0.82)
 
         self.weight_frame = ttk.Frame(self.notebook)
         self.calories_frame = ttk.Frame(self.notebook)
@@ -66,7 +69,8 @@ class ChartFrame(ttk.Frame):
 
         # Return button at bottom
         btn_frame = ttk.Frame(self)
-        btn_frame.pack(fill=X, pady=(4, 8))
+        # Ensure the button frame is always at the bottom
+        btn_frame.pack(side=BOTTOM, fill=X, pady=(4, 8))
         # Return button styled like Checkout
         self.return_btn = ttk.Button(btn_frame, text='Return', command=self._on_return, style='NarrowAccent.TButton')
         self.return_btn.pack(fill=X)
@@ -200,29 +204,56 @@ class ChartFrame(ttk.Frame):
                 child.destroy()
         except Exception:
             pass
-
         bg_light = '#1a2332'
         text_primary = '#ffffff'
 
-        # Use a Text widget for monospaced, multiline display and set it read-only
-        txt = Text(target_frame, bg=bg_light, fg=text_primary, font=('Courier', 12), bd=0, highlightthickness=0)
-        txt.pack(fill=BOTH, expand=True, padx=8, pady=8)
-
+        # Fetch calories_today data
         cal_data = {}
         try:
             cal_data = getattr(self.app, 'calories_today', {}) or {}
         except Exception:
             cal_data = {}
 
-        if cal_data:
-            lines = []
-            for k, v in cal_data.items():
-                lines.append(f"{k}={v}")
-            txt.insert('1.0', '\n'.join(lines))
-        else:
-            txt.insert('1.0', 'No calories_today data available')
+        # Create a container row for two columns and fix its height so view stays short
+        container = ttk.Frame(target_frame)
+        container.pack(fill=X, padx=8, pady=8)
+        # prepare items split roughly in half for two columns
+        items = list(cal_data.items()) if cal_data else []
+        mid = (len(items) + 1) // 2
+        left_items = items[:mid]
+        right_items = items[mid:]
 
-        txt.config(state=DISABLED)
+        # Determine a reasonable text height (lines) so overall height is smaller
+        per_col = max(1, mid)
+        lines = min(max(4, per_col), 20)
+        # approximate pixel height per line and compute container height
+        pixel_per_line = 18
+        pixel_height = lines * pixel_per_line + 8
+        # lock container height so it doesn't expand and push the Return button offscreen
+        container.pack_propagate(False)
+        try:
+            container.config(height=pixel_height)
+        except Exception:
+            pass
+
+        # Left column Text (placed to occupy exactly half width)
+        left_txt = Text(container, bg=bg_light, fg=text_primary, font=('Courier', 12), bd=0, highlightthickness=0, wrap=NONE)
+        left_txt.place(relx=0.0, rely=0.0, relwidth=0.5, relheight=1.0)
+
+        # Right column Text (placed to occupy exactly half width)
+        right_txt = Text(container, bg=bg_light, fg=text_primary, font=('Courier', 12), bd=0, highlightthickness=0, wrap=NONE)
+        right_txt.place(relx=0.5, rely=0.0, relwidth=0.5, relheight=1.0)
+
+        if items:
+            left_lines = [f"{k}={v}" for k, v in left_items]
+            right_lines = [f"{k}={v}" for k, v in right_items]
+            left_txt.insert('1.0', '\n'.join(left_lines))
+            right_txt.insert('1.0', '\n'.join(right_lines))
+        else:
+            left_txt.insert('1.0', 'No calories_today data available')
+
+        left_txt.config(state=DISABLED)
+        right_txt.config(state=DISABLED)
 
     def refresh(self):
         """Reload data from logs and redraw both tabs."""
