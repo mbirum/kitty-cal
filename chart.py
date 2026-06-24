@@ -48,12 +48,15 @@ class ChartFrame(ttk.Frame):
 
         self.weight_frame = ttk.Frame(self.notebook)
         self.calories_frame = ttk.Frame(self.notebook)
+        self.today_frame = ttk.Frame(self.notebook)
         self.notebook.add(self.weight_frame, text='Weight')
         self.notebook.add(self.calories_frame, text='Calories')
+        self.notebook.add(self.today_frame, text='Today')
 
-        # Draw both charts into their respective tab frames (default tab is Weight)
+        # Draw both charts into their respective tab frames and populate Today tab
         self._draw_chart('weight', self.weight_frame)
         self._draw_chart('calories', self.calories_frame)
+        self._draw_today_tab(self.today_frame)
 
         # ensure the notebook shows the Weight tab first
         try:
@@ -183,19 +186,28 @@ class ChartFrame(ttk.Frame):
             spine.set_color(text_secondary)
         fig.autofmt_xdate()
 
-        # Create a container so we can show a left column next to the chart
-        container = ttk.Frame(target_frame)
-        container.pack(fill=BOTH, expand=True)
+        # Chart canvas placed directly into the provided target frame
+        canvas = FigureCanvasTkAgg(fig, master=target_frame)
+        canvas.draw()
+        canvas_widget = canvas.get_tk_widget()
+        canvas_widget.pack(fill=BOTH, expand=True)
+        # don't store globally; each tab keeps its own canvas if needed
 
-        # Left column: show `calories_today` contents in monospace
-        left_frame = ttk.Frame(container)
-        left_frame.pack(side=LEFT, fill=Y, padx=(6, 8), pady=6)
+    def _draw_today_tab(self, target_frame):
+        # Clear previous contents
+        try:
+            for child in target_frame.winfo_children():
+                child.destroy()
+        except Exception:
+            pass
+
+        bg_light = '#1a2332'
+        text_primary = '#ffffff'
 
         # Use a Text widget for monospaced, multiline display and set it read-only
-        cal_text = Text(left_frame, bg=bg_light, fg=text_primary, font=('Courier', 12), bd=0, highlightthickness=0)
-        cal_text.pack(fill=Y, expand=False)
+        txt = Text(target_frame, bg=bg_light, fg=text_primary, font=('Courier', 12), bd=0, highlightthickness=0)
+        txt.pack(fill=BOTH, expand=True, padx=8, pady=8)
 
-        # Fetch calories_today from the application root if available
         cal_data = {}
         try:
             cal_data = getattr(self.app, 'calories_today', {}) or {}
@@ -204,21 +216,13 @@ class ChartFrame(ttk.Frame):
 
         if cal_data:
             lines = []
-            # keep a stable order similar to app.get_initial_calories
             for k, v in cal_data.items():
                 lines.append(f"{k}={v}")
-            cal_text.insert('1.0', '\n'.join(lines))
+            txt.insert('1.0', '\n'.join(lines))
         else:
-            cal_text.insert('1.0', 'No calories_today data available')
+            txt.insert('1.0', 'No calories_today data available')
 
-        cal_text.config(state=DISABLED)
-
-        # Chart canvas placed to the right of the left column
-        canvas = FigureCanvasTkAgg(fig, master=container)
-        canvas.draw()
-        canvas_widget = canvas.get_tk_widget()
-        canvas_widget.pack(side=LEFT, fill=BOTH, expand=True)
-        # don't store globally; each tab keeps its own canvas if needed
+        txt.config(state=DISABLED)
 
     def refresh(self):
         """Reload data from logs and redraw both tabs."""
