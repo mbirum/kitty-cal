@@ -1,6 +1,6 @@
 wet_cal=63
 wet_quantity=105
-dry_cal=120
+dry_cal=180
 dry_quantity=1
 minnow_cal=10
 minnow_quantity=5
@@ -14,5 +14,5 @@ greenie_cal=0
 greenie_quantity=0
 bova_taken=2
 drops_taken=2
-nausea_taken=0
+nausea_taken=1
 weight=5.8
