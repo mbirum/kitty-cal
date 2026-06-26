@@ -26,8 +26,9 @@ class HomeFrame(ttk.Frame):
         header_frame = ttk.Frame(main_container)
         header_frame.pack(fill=X, pady=(0, 8))
 
-        self.label_header = ttk.Label(header_frame, text="Junie Birum", style='Header.TLabel')
+        self.label_header = ttk.Label(header_frame, text="Junie Birum", style='Header.TLabel', cursor='hand2')
         self.label_header.pack(side=LEFT, padx=(0, 10))
+        self.label_header.bind("<Button-1>", lambda event: self.master.attributes("-fullscreen", False))
         
         # Calories display inline with header
         self.total_calories_label = ttk.Label(header_frame, 
