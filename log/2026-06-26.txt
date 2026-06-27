@@ -1,6 +1,6 @@
 wet_cal=60
 wet_quantity=100
-dry_cal=120
+dry_cal=180
 dry_quantity=1
 minnow_cal=0
 minnow_quantity=0
