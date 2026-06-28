@@ -103,6 +103,12 @@ class WeighInFrame(ttk.Frame):
         except Exception:
             pass
 
+        # Clear any status
+        try:
+            self.status_label.config(text="")
+        except Exception:
+            pass
+
         # Return to home if callback provided
         if callable(self.show_home_callback):
             try:
