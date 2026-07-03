@@ -13,6 +13,6 @@ churu_quantity=0
 greenie_cal=6
 greenie_quantity=4
 bova_taken=1
-drops_taken=0
+drops_taken=2
 nausea_taken=0
 weight=6.6
