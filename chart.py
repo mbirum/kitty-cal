@@ -180,6 +180,7 @@ class ChartFrame(ttk.Frame):
         else:
             if self._dates:
                 ax.plot(self._dates, self._calories, marker='o', color=accent_primary, markerfacecolor=text_primary)
+                ax.axhline(200, color='red', linewidth=1, linestyle='-', alpha=0.8)
                 ax.set_title('Calories per Day', color=text_primary)
                 ax.set_ylabel('Calories', color=text_secondary)
             else:
