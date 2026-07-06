@@ -14,5 +14,5 @@ greenie_cal=0
 greenie_quantity=0
 bova_taken=1
 drops_taken=4
-nausea_taken=0
+nausea_taken=1
 weight=6.6
