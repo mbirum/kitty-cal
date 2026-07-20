@@ -1,5 +1,5 @@
-wet_cal=30
-wet_quantity=50
+wet_cal=60
+wet_quantity=100
 dry_cal=120
 dry_quantity=0
 minnow_cal=0
@@ -13,6 +13,6 @@ churu_quantity=0
 greenie_cal=0
 greenie_quantity=0
 bova_taken=2
-drops_taken=2
-nausea_taken=0
+drops_taken=3
+nausea_taken=1
 weight=6.8
